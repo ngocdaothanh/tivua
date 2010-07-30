@@ -1,0 +1,26 @@
+- import colinh.helper.ApplicationHelper
+- import colinh.model.Article
+
+- val h = new AnyRef with ApplicationHelper
+- import h._
+
+- at("title", "Home")
+
+- val page     = at[Int]("page")
+- val numPages = at[Int]("numPages")
+- val articles = at[Iterable[Article]]("articles")
+- val prefix   = "/articles/page/"
+- val links    = renderPaginationLinks(numPages, page, prefix)
+
+!= links
+
+%ul.articles
+  - for (a <- articles)
+    %li
+      %h1
+        - val url = "/articles/" + a.id
+        %a(href=url)= a.title
+      %div
+        != a.teaser
+
+!= links
