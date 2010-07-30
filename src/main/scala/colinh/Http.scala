@@ -3,7 +3,7 @@ package colinh
 import org.jboss.netty.handler.codec.http.HttpMethod._
 
 import xt.server.Server
-import xt.framework.STApp
+import xt.framework.XTApp
 import xt.middleware.{App, Static,
                       ParamsParser,
                       MethodOverride, Dispatcher, Failsafe, Squeryl}
@@ -24,7 +24,7 @@ object Http {
   private val controllerPaths = List("colinh.controller")
 
   def main(args: Array[String]) {
-    var app: App = new STApp
+    var app: App = new XTApp
     app = Failsafe.wrap(app)  // Failsafe should be the last in the middleware chain
     app = Squeryl.wrap(app)
     app = Dispatcher.wrap(app, routes, errorRoutes, controllerPaths)
