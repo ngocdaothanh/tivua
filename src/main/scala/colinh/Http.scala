@@ -2,9 +2,9 @@ package colinh
 
 import org.jboss.netty.handler.codec.http.HttpMethod._
 
-import st.server.Server
-import st.framework.STApp
-import st.middleware.{App, Static,
+import xt.server.Server
+import xt.framework.STApp
+import xt.middleware.{App, Static,
                       ParamsParser,
                       MethodOverride, Dispatcher, Failsafe, Squeryl}
 
