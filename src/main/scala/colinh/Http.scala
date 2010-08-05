@@ -24,9 +24,11 @@ object Http {
   private val controllerPaths = List("colinh.controller")
 
   def main(args: Array[String]) {
+    // Failsafe should be outside Squeryl.
+    // If Failsafe is inside Squeryl, all exceptions would be swallowed.
     var app: App = new XTApp
-    app = Failsafe.wrap(app)  // Failsafe should be the last in the middleware chain
     app = Squeryl.wrap(app)
+    app = Failsafe.wrap(app)
     app = Dispatcher.wrap(app, routes, errorRoutes, controllerPaths)
     app = MethodOverride.wrap(app)
     app = ParamsParser.wrap(app)
