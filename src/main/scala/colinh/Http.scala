@@ -9,21 +9,21 @@ import xt.middleware.{App, Static,
                       MethodOverride, Dispatcher, Failsafe, Squeryl}
 
 object Http {
-  private val routes =
-    (GET,   "/",                    "Articles#index")  ::
-    (GET,   "/articles/page/:page", "Articles#index")  ::
-    (GET,   "/articles/make",       "Articles#make")   ::
-    (POST,  "/articles",            "Articles#create") ::
-    (GET,   "/articles/:id",        "Articles#show")   ::
-    (GET,   "/articles/:id/edit",   "Articles#edit")   :: Nil
-
-  private val errorRoutes = Map(
-    "404" -> "Errors#error404",
-    "500" -> "Errors#error500")
-
-  private val controllerPaths = List("colinh.controller")
-
   def main(args: Array[String]) {
+    val routes = List(
+      (GET,  "/",                    "Articles#index"),
+      (GET,  "/articles/page/:page", "Articles#index"),
+      (GET,  "/articles/make",       "Articles#make"),
+      (POST, "/articles",            "Articles#create"),
+      (GET,  "/articles/:id",        "Articles#show"),
+      (GET,  "/articles/:id/edit",   "Articles#edit"))
+
+    val errorRoutes = Map(
+      "404" -> "Errors#error404",
+      "500" -> "Errors#error500")
+
+    val controllerPaths = List("colinh.controller")
+
     // Failsafe should be outside Squeryl.
     // If Failsafe is inside Squeryl, all exceptions would be swallowed.
     var app: App = new XTApp
