@@ -8,7 +8,7 @@ import xt.middleware.{App, Static,
                       ParamsParser,
                       MethodOverride, Dispatcher, Failsafe, Squeryl}
 
-object Http {
+object Boot {
   def main(args: Array[String]) {
     val routes = List(
       (GET,  "/",                    "Articles#index"),

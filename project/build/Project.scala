@@ -16,5 +16,5 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
       "postgresql" %  "postgresql" % "8.4-701.jdbc4" % "compile->default"
     ) ++ super.libraryDependencies
 
-  override def mainClass = Some("colinh.Http")
+  override def mainClass = Some("colinh.Boot")
 }
