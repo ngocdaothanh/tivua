@@ -4,9 +4,10 @@ import org.jboss.netty.handler.codec.http.HttpMethod._
 
 import xt.server.Server
 import xt.framework.XTApp
-import xt.middleware.{App, Static,
-                      ParamsParser,
-                      MethodOverride, Dispatcher, Failsafe, Squeryl}
+import xt.middleware.{
+  App,
+  Squeryl,
+  Failsafe, Dispatcher, MethodOverride, ParamsParser, Static}
 
 object Boot {
   def main(args: Array[String]) {
