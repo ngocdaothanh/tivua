@@ -1,10 +1,10 @@
 import sbt._
 
 class Project(info: ProjectInfo) extends DefaultProject(info) {
-  val localMavenRepo = "Local Maven Repo" at
+  val localMavenRepo = "Local Maven" at
     "file://" + Path.userHome + "/.m2/repository"
 
-  val localIvyRepo = "Local Ivy Repo" at
+  val localIvyRepo = "Local Ivy" at
     "file://" + Path.userHome + "/.ivy2/local"
 
   val scalateRepo = "Scalate Repo" at
@@ -12,8 +12,8 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
 
   override def libraryDependencies =
     Set(
-      "cntt"       %% "xitrum"     % "0.1-SNAPSHOT"  % "compile->default",
-      "postgresql" %  "postgresql" % "8.4-701.jdbc4" % "compile->default"
+      "cntt"       %% "xitrum"     % "0.1-SNAPSHOT"  % "compile",
+      "postgresql" %  "postgresql" % "8.4-701.jdbc4" % "compile"
     ) ++ super.libraryDependencies
 
   override def mainClass = Some("colinh.Boot")
