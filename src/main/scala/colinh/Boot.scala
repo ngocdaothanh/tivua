@@ -35,7 +35,10 @@ object Boot {
     app = ParamsParser.wrap(app)
     app = Static.wrap(app)
 
-    val s = new Server(app)
-    s.start
+    val http = new Server(app, 8080)
+    http.start
+
+    val https = new Server(app, 4434)
+    https.start
   }
 }
