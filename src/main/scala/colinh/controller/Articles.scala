@@ -5,7 +5,7 @@ import colinh.model.Article
 
 class Articles extends Application {
   def index {
-    val page = param("page").getOrElse("1").toInt
+    val page = paramo("page").getOrElse("1").toInt
     val (numPages, articles) = Article.page(page)
     at("page",     page)
     at("numPages", numPages)
@@ -14,7 +14,7 @@ class Articles extends Application {
   }
 
   def show {
-    val id = param("id").get.toLong
+    val id = param("id").toLong
     Article.first(id) match {
       case None =>
         response.setStatus(HttpResponseStatus.NOT_FOUND)
@@ -34,9 +34,9 @@ class Articles extends Application {
 
   def create {
     val article = new Article
-    article.title  = param("title").get
-    article.teaser = param("teaser").get
-    article.body   = param("body").get
+    article.title  = param("title")
+    article.teaser = param("teaser")
+    article.body   = param("body")
 
     at("article", article)
     render("make")
