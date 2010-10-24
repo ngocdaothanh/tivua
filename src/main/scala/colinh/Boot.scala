@@ -16,13 +16,14 @@ object Boot {
     val errorRoutes = Errors.routes
 
     val controllerPaths = List("colinh.controller")
+    val viewPaths = List("colinh/view")
 
     // Failsafe should be outside Squeryl.
     // If Failsafe is inside Squeryl, all exceptions would be swallowed.
     var app: App = new XTApp
     app = Squeryl.wrap(app)
     app = Failsafe.wrap(app)
-    app = Dispatcher.wrap(app, routes, errorRoutes, controllerPaths)
+    app = Dispatcher.wrap(app, routes, errorRoutes, controllerPaths, viewPaths)
     app = MethodOverride.wrap(app)
     app = ParamsParser.wrap(app)
     app = Static.wrap(app)
