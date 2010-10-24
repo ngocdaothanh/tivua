@@ -13,8 +13,9 @@ VERSION_SCALA=2.8.0
 set_class_path() {
   if [ -d src ]  # Exists implies development environment
   then
-    CLASS_PATH="project/boot/scala-$VERSION_SCALA/lib/*:lib_managed/scala_$VERSION_SCALA/compile/*:target/scala_$VERSION_SCALA/classes:config"
+    CLASS_PATH="project/boot/scala-$VERSION_SCALA/lib/*:lib_managed/scala_$VERSION_SCALA/compile/*:target/scala_$VERSION_SCALA/classes:target/scala_$VERSION_SCALA/resources:config"
   else
+    JAVA_OPTS="$JAVA_OPTS -Dxitrum.mode=production"
     CLASS_PATH="lib/*:config"
   fi
 }

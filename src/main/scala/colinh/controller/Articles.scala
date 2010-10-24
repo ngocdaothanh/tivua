@@ -1,7 +1,19 @@
 package colinh.controller
 
-import org.jboss.netty.handler.codec.http.HttpResponseStatus
+import org.jboss.netty.handler.codec.http.HttpMethod._
+import org.jboss.netty.handler.codec.http.HttpResponseStatus._
+
 import colinh.model.Article
+
+object Articles {
+	val routes = List(
+    (GET,  "/",                    "Articles#index"),
+    (GET,  "/articles/page/:page", "Articles#index"),
+    (GET,  "/articles/make",       "Articles#make"),
+    (POST, "/articles",            "Articles#create"),
+    (GET,  "/articles/:id",        "Articles#show"),
+    (GET,  "/articles/:id/edit",   "Articles#edit"))
+}
 
 class Articles extends Application {
   def index {
@@ -17,7 +29,7 @@ class Articles extends Application {
     val id = param("id").toLong
     Article.first(id) match {
       case None =>
-        response.setStatus(HttpResponseStatus.NOT_FOUND)
+        response.setStatus(NOT_FOUND)
         render("Errors#error404")
 
       case Some(article) =>

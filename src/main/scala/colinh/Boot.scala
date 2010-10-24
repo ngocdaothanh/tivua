@@ -1,7 +1,5 @@
 package colinh
 
-import org.jboss.netty.handler.codec.http.HttpMethod._
-
 import xt.server.Server
 import xt.framework.XTApp
 import xt.middleware.{
@@ -9,19 +7,13 @@ import xt.middleware.{
   Squeryl,
   Failsafe, Dispatcher, MethodOverride, ParamsParser, Static}
 
+import colinh.controller._
+
 object Boot {
   def main(args: Array[String]) {
-    val routes = List(
-      (GET,  "/",                    "Articles#index"),
-      (GET,  "/articles/page/:page", "Articles#index"),
-      (GET,  "/articles/make",       "Articles#make"),
-      (POST, "/articles",            "Articles#create"),
-      (GET,  "/articles/:id",        "Articles#show"),
-      (GET,  "/articles/:id/edit",   "Articles#edit"))
+    val routes = Articles.routes
 
-    val errorRoutes = Map(
-      "404" -> "Errors#error404",
-      "500" -> "Errors#error500")
+    val errorRoutes = Errors.routes
 
     val controllerPaths = List("colinh.controller")
 
