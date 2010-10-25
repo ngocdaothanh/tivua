@@ -3,32 +3,17 @@
 JAVA_OPTS='-Xms2000m -Xmx6000m -server -Djava.awt.headless=true'
 
 # These should be the same as in project/build.properties
-VERSION_APP=0.1-SNAPSHOT
-APP=colinh
+VERSION_APP=1.0
+APP=mobion_music
 
 # Not frequently changed
-MAIN_CLASS='colinh.Boot'
+MAIN_CLASS='mobion.music.Boot'
 VERSION_SCALA=2.8.0
 
-set_class_path() {
-  if [ -d src ]  # Exists implies development environment
-  then
-    CLASS_PATH="project/boot/scala-$VERSION_SCALA/lib/*:lib_managed/scala_$VERSION_SCALA/compile/*:target/scala_$VERSION_SCALA/classes:target/scala_$VERSION_SCALA/resources:config"
-  else
-    JAVA_OPTS="$JAVA_OPTS -Dxitrum.mode=production"
-    CLASS_PATH="lib/*:config"
-  fi
-}
+CLASS_PATH="lib/*:config"
 
 start() {
-  set_class_path
   java $JAVA_OPTS -cp $CLASS_PATH $MAIN_CLASS
-}
-
-console() {
-  set_class_path
-  echo $CLASS_PATH
-  java $JAVA_OPTS -cp $CLASS_PATH:lib_managed/scala_$VERSION_SCALA/xitrum_console/* scala.tools.nsc.MainGenericRunner -usejavacp
 }
 
 release() {
@@ -64,10 +49,6 @@ release() {
 case "$1" in
   release)
     release
-    ;;
-  console)
-    console
-    ;;
   *)
     start
 esac
