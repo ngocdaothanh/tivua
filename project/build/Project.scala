@@ -1,6 +1,20 @@
 import sbt._
 
 class Project(info: ProjectInfo) extends DefaultProject(info) {
+  // Compile options
+
+  override def compileOptions = super.compileOptions ++
+    Seq("-deprecation",
+        "-Xmigration",
+        "-Xcheckinit",
+        "-Xwarninit",
+        "-encoding", "utf8")
+        .map(x => CompileOption(x))
+
+  override def javaCompileOptions = JavaCompileOption("-Xlint:unchecked") :: super.javaCompileOptions.toList
+
+  // Repos ---------------------------------------------------------------------
+
   val scalateRepo = "Scalate" at
     "http://repo.fusesource.com/nexus/content/repositories/snapshots"
 
@@ -10,6 +24,11 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
     "postgresql"     %  "postgresql"      % "8.4-701.jdbc4"
   ) ++ super.libraryDependencies
 
+  // Paths ---------------------------------------------------------------------
+
+  override def mainJavaSourcePath = Path.fromFile("src/main/cpp/gen-java")
+
   override def unmanagedClasspath = super.unmanagedClasspath +++ ("config")
+
   override def mainClass = Some("colinh.Boot")
 }
