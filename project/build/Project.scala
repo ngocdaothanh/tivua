@@ -7,6 +7,7 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
     Seq("-deprecation",
         "-Xmigration",
         "-Xcheckinit",
+        "-Xstrict-warnings",
         "-Xwarninit",
         "-encoding", "utf8")
         .map(x => CompileOption(x))
@@ -25,8 +26,6 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
   ) ++ super.libraryDependencies
 
   // Paths ---------------------------------------------------------------------
-
-  override def mainJavaSourcePath = Path.fromFile("src/main/cpp/gen-java")
 
   override def unmanagedClasspath = super.unmanagedClasspath +++ ("config")
 
