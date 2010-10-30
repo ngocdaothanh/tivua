@@ -14,13 +14,13 @@
 
 != links
 
-%ul.articles
+ul.articles
   - for (a <- articles)
-    %li
-      %h1
+    li
+      h1
         - val url = "/articles/" + a.id
-        %a(href=url)= a.title
-      %div
+        a(href=url)= a.title
+      div
         != a.teaser
 
 != links
