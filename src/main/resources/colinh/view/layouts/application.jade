@@ -21,9 +21,33 @@ html(xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en")
         h1
           a(href="/") Colinh
 
-      #content.grid_9
+      #content.grid_8
         != at("content_for_layout")
         #footer Powered by Colinh &amp; Xitrum
 
-      #sidebar.grid_3
+      #sidebar.grid_4
         a(href="/articles/make") Create new article
+        <br /></br /></br />
+        <fb:name uid="12345"></fb:name>
+
+        <fb:login-button show-faces="true"></fb:login-button>
+
+        <fb:profile-pic uid="12345" facebook-logo="true" />
+
+
+      #fb-root
+      :javascript
+        window.fbAsyncInit = function() {
+          FB.init({appId: '102713449075', status: true, cookie: true, xfbml: true});
+          FB.Event.subscribe('auth.login', function(response) {
+            window.location.reload();
+          });
+          FB.Event.subscribe('auth.logout', function(response) {
+            window.location.reload();
+          });
+        };
+        (function() {
+          var e = document.createElement('script'); e.async = true;
+          e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+          document.getElementById('fb-root').appendChild(e);
+        }());
