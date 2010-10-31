@@ -1,0 +1,54 @@
+== User
+
+Only Facebook users can login. Users of the old system (OpenKH):
+* User ID   = 0
+* User name = OpenID
+
+2 user types: admin and non-admin
+
+Listing order: sorted by Facebook user ID
+
+When displaying a user:
+* All his articles are listed
+* Link to his Facebook page is displayed
+
+== Article
+
+Data:
+* Title
+* Teaser (dẫn nhập, mào đầu)
+* Body
+
+Metadata:
+* Sticky
+* Hits
+* Credits
+
+Listing order:
+* Sticky (if any, only admin can set/unset this property)
+* Most recently modified "current version" (see below)
+
+== Article version
+
+Versioning is supported. But one user only has at most one version for each
+article: 1 user = 1 version.
+
+Credits: users that have edited are displayed in the order of edition
+
+When creating:
+* A version is created
+* An article is created, with "current version" set to the version just created
+
+When editing:
+* Can based on the current version or any version
+* If the has never edited this article before => new version is created;
+  otherwise his version is updated
+
+Current version:
+* When a new version is created => set to this version
+* When an existing version is edited => set to this version
+* When a new version is selected as "current"
+
+== Comment
+
+== Upload

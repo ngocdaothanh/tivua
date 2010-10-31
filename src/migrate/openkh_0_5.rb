@@ -46,7 +46,7 @@ def convert_articles
     updated_at = Time.now.to_s
     user_id    = 1
 
-    $colinh.do("INSERT INTO article(title, teaser, body, sticky, hits, createdat, updatedat, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    $colinh.do("INSERT INTO articles(title, teaser, body, sticky, hits, createdat, updatedat, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       title, teaser, body, false, hits, created_at, updated_at, user_id)
   end
 end
