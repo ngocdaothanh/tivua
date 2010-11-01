@@ -20,7 +20,7 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
 
   override def libraryDependencies = Set(
     "cntt"           %% "xitrum"          % "0.1-SNAPSHOT",
-    "ch.qos.logback" %  "logback-classic" % "0.9.25",
+    "ch.qos.logback" %  "logback-classic" % "0.9.26",
     "postgresql"     %  "postgresql"      % "8.4-701.jdbc4"
   ) ++ super.libraryDependencies
 
