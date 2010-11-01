@@ -1,12 +1,14 @@
 package colinh.controller
 
-import org.jboss.netty.handler.codec.http.HttpMethod._
-import org.jboss.netty.handler.codec.http.HttpResponseStatus._
+import org.jboss.netty.handler.codec.http._
+import HttpMethod._
+import HttpResponseStatus._
+import HttpHeaders.Names._
 
 import colinh.model.Article
 
 object Articles {
-	val routes = List(
+  val routes = List(
     (GET,  "/",                    "Articles#index"),
     (GET,  "/articles/page/:page", "Articles#index"),
     (GET,  "/articles/make",       "Articles#make"),
