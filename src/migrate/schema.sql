@@ -40,7 +40,7 @@ CREATE TABLE article_versions
 
   articleid int                         NOT NULL,
 
-  CONSTRAINT articles_pkey PRIMARY KEY (id)
+  CONSTRAINT article_versions_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE comments
