@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JAVA_OPTS='-Xms2000m -Xmx6000m -server -Djava.awt.headless=true -Dxitrum.mode=production'
+JAVA_OPTS='-Xms256m -Xmx512m -server -Djava.awt.headless=true -Dxitrum.mode=production'
 
 # These should be the same as in project/build.properties
 APP_VERSION=0.1-SNAPSHOT
@@ -8,7 +8,7 @@ APP=colinh
 
 # Not frequently changed
 MAIN_CLASS='colinh.Boot'
-SCALA_VERSION=2.8.0
+SCALA_VERSION=2.8.1
 
 CLASS_PATH="lib/*:config"
 
