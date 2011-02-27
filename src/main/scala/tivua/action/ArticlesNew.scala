@@ -1,7 +1,9 @@
 package tivua.action
 
+import xitrum.action.annotation.GET
 import tivua.model.Article
 
+@GET(value="/articles/new", last=true)
 class ArticlesNew extends Application {
   def execute {
     val article = new Article
@@ -19,7 +21,7 @@ class ArticlesNew extends Application {
         <textarea class="tinymce article_body" name="body">{article.body}</textarea>
 
         <input type="submit" value="Save" />
-      </form>)
+      </form>
     )
   }
 }

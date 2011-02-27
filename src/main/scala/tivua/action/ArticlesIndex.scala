@@ -1,7 +1,11 @@
 package tivua.action
 
+import scala.collection.mutable.ArrayBuffer
+import xitrum.action.annotation.GET
+
 import tivua.model.Article
 
+@GET("/")
 class ArticlesIndex extends Application {
   def execute {
     val page = paramo("page").getOrElse("1").toInt
@@ -9,8 +13,8 @@ class ArticlesIndex extends Application {
 
     at("title") = "Home"
     val links   = renderPaginationLinks(numPages, page, "/articles/page/")
-    renderView(
-      {links}
+    renderView(ArrayBuffer(
+      links,
       <ul class="articles">
         {for (a <- articles) yield
           <li>
@@ -19,8 +23,9 @@ class ArticlesIndex extends Application {
               {a.teaser}
             </div>
           </li>
-      </ul>
-      {links}
-    )
+        }
+      </ul>,
+      links
+    ))
   }
 }

@@ -2,7 +2,7 @@ package tivua.action
 
 import tivua.model.Article
 
-class ArticlesNew extends Application {
+class ArticlesCreate extends Application {
   def execute {
     val article = new Article
   }

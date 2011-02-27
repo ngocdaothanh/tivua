@@ -1,33 +1,76 @@
 package tivua.model
 
+import scala.collection.mutable.ArrayBuffer
+import com.mongodb.casbah.Imports._
+
 class Article(
-    var id:        Int,
+    var id:        String,
     var title:     String,
     var teaser:    String,
     var body:      String,
     var sticky:    Boolean,
     var hits:      Int,
-    var createdAt: DateType,
-    var updatedAt: DateType,
-    var userId:    Int) {
-  def this() = this(0, "", "", "", false, 0, null, null, 0)
+    var createdAt: Int,
+    var updatedAt: Int,
+    var userId:    String) {
+  def this() = this("", "", "", "", false, 0, 0, 0, "")
+}
+
+object ArticleColl {
+  val COLL       = "articles"
+
+  val ID         = "_id"
+  val TITLE      = "title"
+  val TEASER     = "teaser"
+  val BODY       = "body"
+  val STICKY     = "sticky"
+  val HITS       = "hits"
+  val CREATED_AT = "created_at"
+  val UPDATED_AT = "updated_at"
+  val USER_ID    = "uid"
 }
 
 object Article {
-  val pageLength = 10
+  import ArticleColl._
 
-  def all = from(articles)(a => select(a) orderBy(a.updatedAt desc))
+  val ITEMS_PER_PAGE = 10
 
-  def page(p: Int) = {
-    val size = from(articles)(a => compute(count)).toInt
-    val numPages1 = size/pageLength
-    val numPages2 = if (numPages1*pageLength < size) numPages1 + 1 else numPages1
-    val col = all.page(p - 1, pageLength)
-    (numPages2, col)
+  val coll = DB.db(COLL)
+
+  //----------------------------------------------------------------------------
+
+  def all: Iterable[Article] = {
+    var cur = coll.find
+    val buffer = new ArrayBuffer[Article]
+    for (o <- cur) {
+      val a = mongoToScala(o)
+      buffer.append(a)
+    }
+    buffer
   }
 
-  def first(id: Long): Option[Article] = {
-    val q = from(articles)(a => where(a.id === id) select(a))
-    if (q.size == 0) None else Some(q.single)
+  def page(p: Int): (Int, Iterable[Article]) = {
+    val (numPages, coll) = {
+      (1, new ArrayBuffer[Article])
+    }
+    (numPages, coll)
+  }
+
+  def first(id: String): Option[Article] = coll.findOneByID(id).map(mongoToScala)
+
+  //----------------------------------------------------------------------------
+
+  def mongoToScala(mongo: DBObject): Article = {
+    val id        = mongo._id.get.toString
+    val title     = mongo.as[String] (TITLE)
+    val teaser    = mongo.as[String] (TEASER)
+    val body      = mongo.as[String] (BODY)
+    val sticky    = mongo.as[Boolean](STICKY)
+    val hits      = mongo.as[Int]    (HITS)
+    val createdAt = mongo.as[Int]    (CREATED_AT)
+    val updatedAt = mongo.as[Int]    (UPDATED_AT)
+    val userId    = mongo.as[String] (USER_ID)
+
+    new Article(id, title, teaser, body, sticky, hits, createdAt, updatedAt, userId)
   }
 }
