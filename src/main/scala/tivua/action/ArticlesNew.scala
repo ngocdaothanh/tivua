@@ -10,7 +10,7 @@ class ArticlesNew extends Application {
 
     at("title") = "Create new article"
     renderView(
-      <form action="/articles" method="post">
+      <form action={urlFor[ArticlesCreate]} method="post" enctype="multipart/form-data">
         <label>Title</label>
         <input type="text" name="title" value={article.title} />
 
@@ -19,6 +19,8 @@ class ArticlesNew extends Application {
 
         <label>Body</label>
         <textarea class="tinymce article_body" name="body">{article.body}</textarea>
+
+        <input type="file" name="attachment" />
 
         <input type="submit" value="Save" />
       </form>
