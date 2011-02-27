@@ -1,6 +1,4 @@
-package colinh.model
-
-import org.squeryl.PrimitiveTypeMode._
+package tivua.model
 
 class User(
     var id:       Int,

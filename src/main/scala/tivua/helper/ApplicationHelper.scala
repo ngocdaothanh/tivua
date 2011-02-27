@@ -1,4 +1,4 @@
-package colinh.helper
+package tivua.helper
 
 trait ApplicationHelper {
   def renderPaginationLinks(numPages: Int, currentPage: Int, urlPrefix: String) = {

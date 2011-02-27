@@ -1,7 +1,4 @@
-package colinh.model
-
-import org.squeryl.PrimitiveTypeMode._
-import Schema._
+package tivua.model
 
 class Article(
     var id:        Int,
