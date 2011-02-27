@@ -3,6 +3,7 @@ package tivua.action
 import xitrum.action.Action
 import xitrum.action.view.DocType
 
+import tivua.Config
 import tivua.helper.ApplicationHelper
 
 trait Application extends Action with ApplicationHelper {
@@ -28,7 +29,7 @@ trait Application extends Action with ApplicationHelper {
       <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
         <head>
           <meta content="text/html; charset=utf-8" http-equiv="content-type" />
-          <title>{at("title")}</title>
+          <title>{Config.siteName} - {at("title")}</title>
 
           <link type="image/vnd.microsoft.icon" rel="shortcut icon" href="/favicon.ico" />
 
@@ -37,23 +38,24 @@ trait Application extends Action with ApplicationHelper {
           <link type="text/css" rel="stylesheet" media="all" href="/public/css/960/960.css" />
           <link type="text/css" rel="stylesheet" media="all" href="/public/css/application.css" />
 
-          <script type="text/javascript" src="/public/js/jquery-1.4.3.min.js"></script>
+          {xitrumHead}
           <script type="text/javascript" src="/public/tinymce-3.3.8/jquery.tinymce.js"></script>
           <script type="text/javascript" src="/public/js/application.js"></script>
         </head>
         <body>
           <div class="container_12">
             <div id="header" class="grid_12">
-              <h1><a href="/">Tivua</a></h1>
+              <h1><a href={urlFor[ArticlesIndex]}>{Config.siteName}</a></h1>
             </div>
 
             <div id="content" class="grid_8">
+              <div id="flash">{jsFlash}</div>
+
               {at("contentForLayout")}
-              <div id="footer">Powered by Tivua</div>
             </div>
 
             <div id="sidebar" class="grid_4">
-              <a href="/articles/make">Create new article</a>
+              <a href={urlFor[ArticlesNew]}>Create new article</a>
               <br /><br /><br />
               <fb:name uid="12345"></fb:name>
 
@@ -62,10 +64,16 @@ trait Application extends Action with ApplicationHelper {
               <fb:profile-pic uid="12345" facebook-logo="true" />
             </div>
 
+            <div class="clear"></div>
+
+            <div id="footer">Powered by Tivua</div>
+
             <div id="fb-root"></div>
 
             <script>{js}</script>
           </div>
+
+          {jsForView}
         </body>
       </html>
     ))

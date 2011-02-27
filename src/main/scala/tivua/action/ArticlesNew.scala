@@ -3,7 +3,7 @@ package tivua.action
 import xitrum.action.annotation.GET
 import tivua.model.Article
 
-@GET(value="/articles/new", last=true)
+@GET(value="/articles/new", first=true)
 class ArticlesNew extends Application {
   def execute {
     val article = new Article
@@ -12,7 +12,7 @@ class ArticlesNew extends Application {
     renderView(
       <form action="/articles" method="post">
         <label>Title</label>
-        <input type="text" name="title" value="#{article.title}" />
+        <input type="text" name="title" value={article.title} />
 
         <label>Teaser</label>
         <textarea class="tinymce" name="teaser">{article.teaser}</textarea>

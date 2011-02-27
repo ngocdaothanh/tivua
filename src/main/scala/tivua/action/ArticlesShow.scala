@@ -13,7 +13,7 @@ class ArticlesShow extends Application {
       case None =>
         response.setStatus(NOT_FOUND)
         flash("Not found")
-        renderText("")
+        renderView("")
 
       case Some(article) =>
         at("title") = article.title
