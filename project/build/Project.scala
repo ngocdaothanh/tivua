@@ -15,18 +15,22 @@ class Project(info: ProjectInfo) extends DefaultProject(info) {
 
   // Repos ---------------------------------------------------------------------
 
-  val scalateRepo = "Scalate" at
-    "http://repo.fusesource.com/nexus/content/repositories/snapshots"
+  // For Xitrum
+  val sonatypeSnapshot = "Sonatype Snapshot" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-  override def libraryDependencies = Set(
-    "cntt"           %% "xitrum"          % "0.1-SNAPSHOT",
-    "ch.qos.logback" %  "logback-classic" % "0.9.26",
-    "postgresql"     %  "postgresql"      % "8.4-701.jdbc4"
-  ) ++ super.libraryDependencies
+  // For Netty 4.0.0.Alpha1-SNAPSHOT, which must be installed to local Maven repository manurally
+  val localMaven = "Local Maven Repository" at "file://" + Path.userHome + "/.m2/repository"
 
-  // Paths ---------------------------------------------------------------------
+  override def libraryDependencies =
+    Set(
+      "tv.cntt"        %% "xitrum"            % "1.0-SNAPSHOT",
+      "ch.qos.logback" %  "logback-classic"   % "0.9.27",  // Xitrum needs SLF4J implementation
+      "org.mongodb"    %  "mongo-java-driver" % "2.4"
+    ) ++ super.libraryDependencies
+
+ // Paths ---------------------------------------------------------------------
 
   override def unmanagedClasspath = super.unmanagedClasspath +++ ("config")
 
-  override def mainClass = Some("colinh.Boot")
+  override def mainClass = Some("tivua.Boot")
 }
