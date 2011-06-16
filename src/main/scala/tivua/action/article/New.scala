@@ -1,16 +1,18 @@
-package tivua.action
+package tivua.action.article
 
 import xitrum.action.annotation.GET
+
+import tivua.action.Application
 import tivua.model.Article
 
 @GET(value="/articles/new", first=true)
-class ArticlesNew extends Application {
-  def execute {
+class New extends Application {
+  override def execute {
     val article = new Article
 
     at("title") = "Create new article"
     renderView(
-      <form action={urlFor[ArticlesCreate]} method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data">
         <label>Title</label>
         <input type="text" name="title" value={article.title} />
 

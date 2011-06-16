@@ -4,6 +4,7 @@ import xitrum.action.Action
 import xitrum.action.view.DocType
 
 import tivua.Config
+import tivua.action.article.{Index, New}
 import tivua.helper.ApplicationHelper
 
 trait Application extends Action with ApplicationHelper {
@@ -27,7 +28,7 @@ trait Application extends Action with ApplicationHelper {
       <body>
         <div class="container_12">
           <div id="header" class="grid_12">
-            <h1><a href={urlFor[ArticlesIndex]}>{Config.siteName}</a></h1>
+            <h1><a href={urlFor[Index]}>{Config.siteName}</a></h1>
           </div>
 
           <div id="content" class="grid_8">
@@ -37,7 +38,7 @@ trait Application extends Action with ApplicationHelper {
           </div>
 
           <div id="sidebar" class="grid_4">
-            <a href={urlFor[ArticlesNew]}>Create new article</a>
+            <a href={urlFor[New]}>Create new article</a>
             <br /><br /><br />
             <fb:name uid="12345"></fb:name>
 
