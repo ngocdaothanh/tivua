@@ -34,7 +34,7 @@ trait Application extends Action with ApplicationHelper {
           <div id="content" class="grid_8">
             <div id="flash">{jsFlash}</div>
 
-            {at("contentForLayout")}
+            {renderedView}
           </div>
 
           <div id="sidebar" class="grid_4">
