@@ -1,7 +1,7 @@
 package tivua.action
 
-import xitrum.action.Action
-import xitrum.action.view.DocType
+import xitrum.Action
+import xitrum.view.DocType
 
 import tivua.Config
 import tivua.action.article.{Index, New}

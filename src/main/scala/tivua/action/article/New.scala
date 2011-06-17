@@ -1,6 +1,6 @@
 package tivua.action.article
 
-import xitrum.action.annotation.GET
+import xitrum.annotation.GET
 
 import tivua.action.Application
 import tivua.model.Article
