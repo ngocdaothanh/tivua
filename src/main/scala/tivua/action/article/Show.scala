@@ -3,11 +3,11 @@ package tivua.action.article
 import org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import xitrum.annotation.GET
 
-import tivua.action.Application
+import tivua.action.AppAction
 import tivua.model.Article
 
 @GET("/articles/:id")
-class Show extends Application {
+class Show extends AppAction {
   override def execute {
     val id = param("id")
     Article.first(id) match {

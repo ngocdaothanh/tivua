@@ -2,11 +2,11 @@ package tivua.action.article
 
 import xitrum.annotation.GET
 
-import tivua.action.Application
+import tivua.action.AppAction
 import tivua.model.Article
 
 @GET(value="/articles/new", first=true)
-class New extends Application {
+class New extends AppAction {
   override def execute {
     val article = new Article
 

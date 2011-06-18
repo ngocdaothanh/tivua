@@ -5,9 +5,9 @@ import xitrum.view.DocType
 
 import tivua.Config
 import tivua.action.article.{Index, New}
-import tivua.helper.ApplicationHelper
+import tivua.helper.AppHelper
 
-trait Application extends Action with ApplicationHelper {
+trait AppAction extends Action with AppHelper {
   override def layout = Some(() => DocType.xhtmlTransitional(
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>

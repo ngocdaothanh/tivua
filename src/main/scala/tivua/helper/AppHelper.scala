@@ -1,6 +1,6 @@
 package tivua.helper
 
-trait ApplicationHelper {
+trait AppHelper {
   def renderPaginationLinks(numPages: Int, currentPage: Int, urlPrefix: String): Any = {
     if (numPages == 1) return ""
 
