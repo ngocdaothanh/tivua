@@ -14,7 +14,7 @@ resolvers += "Local Maven Repository"       at "file://" + Path.userHome.absolut
 
 libraryDependencies += "tv.cntt"            %%  "xitrum"          % "1.1-SNAPSHOT"
 
-libraryDependencies += "ch.qos.logback"     %   "logback-classic" % "0.9.28"
+libraryDependencies += "ch.qos.logback"     %   "logback-classic" % "0.9.29"
 
 libraryDependencies += "com.mongodb.casbah" %%  "casbah"          % "2.1.5-1"
 
