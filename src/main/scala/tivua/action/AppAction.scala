@@ -16,13 +16,14 @@ trait AppAction extends Action with AppHelper {
 
         <link type="image/vnd.microsoft.icon" rel="shortcut icon" href="/favicon.ico" />
 
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/960/reset.css" />
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/960/text.css" />
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/960/960.css" />
+        {xitrumHead}
+
+        <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/reset.css" />
+        <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/grid.css" />
+        <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/text.css" />
         <link type="text/css" rel="stylesheet" media="all" href="/public/css/application.css" />
 
-        {xitrumHead}
-        <script type="text/javascript" src="/public/tinymce-3.3.8/jquery.tinymce.js"></script>
+        <script type="text/javascript" src="http://tinymce.moxiecode.com/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
         <script type="text/javascript" src="/public/js/application.js"></script>
       </head>
       <body>
