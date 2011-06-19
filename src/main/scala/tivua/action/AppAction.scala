@@ -11,12 +11,12 @@ trait AppAction extends Action with AppHelper {
   override def layout = Some(() => DocType.xhtmlTransitional(
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
+        {xitrumHead}
+
         <meta content="text/html; charset=utf-8" http-equiv="content-type" />
         <title>{Config.siteName} - {at("title")}</title>
 
         <link type="image/vnd.microsoft.icon" rel="shortcut icon" href="/favicon.ico" />
-
-        {xitrumHead}
 
         <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/reset.css" />
         <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/grid.css" />
