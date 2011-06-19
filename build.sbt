@@ -18,6 +18,4 @@ libraryDependencies += "ch.qos.logback"     %   "logback-classic" % "0.9.29"
 
 libraryDependencies += "com.mongodb.casbah" %%  "casbah"          % "2.1.5-1"
 
-mainClass := Some("tivua.Boot")
-
 unmanagedClasspath in Runtime <+= (baseDirectory) map { bd => Attributed.blank(bd / "config") }
