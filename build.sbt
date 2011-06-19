@@ -20,4 +20,4 @@ libraryDependencies += "com.mongodb.casbah" %%  "casbah"          % "2.1.5-1"
 
 mainClass := Some("tivua.Boot")
 
-unmanagedClasspath in Runtime <<= (unmanagedClasspath in Runtime, baseDirectory) map { (cp, bd) => cp :+ Attributed.blank(bd / "config") }
+unmanagedClasspath in Runtime <+= (baseDirectory) map { bd => Attributed.blank(bd / "config") }
