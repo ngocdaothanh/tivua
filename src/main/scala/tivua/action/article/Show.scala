@@ -1,5 +1,6 @@
 package tivua.action.article
 
+import scala.xml.Unparsed
 import org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import xitrum.annotation.GET
 
@@ -14,15 +15,16 @@ class Show extends AppAction {
       case None =>
         response.setStatus(NOT_FOUND)
         flash("Not found")
+        at("title") = "Not found"
         renderView("")
 
       case Some(article) =>
         at("title") = article.title
         renderView(
           <div class="article">
-            <h2>{article.title}</h2>
-            <div>{article.teaser}</div>
-            <div>{article.body}</div>
+            <h1>{article.title}</h1>
+            <div>{Unparsed(article.teaser)}</div>
+            <div>{Unparsed(article.body)}</div>
           </div>)
     }
   }

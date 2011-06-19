@@ -2,6 +2,10 @@
   font-size: 35px;
 }
 
+#header h1 a {
+  text-decoration: none;
+}
+
 #footer {
   font-weight: bold;
 }
@@ -34,4 +38,17 @@ textarea {
 
 textarea.article_body {
   height: 450px;
+}
+
+.pagination {
+  margin: 0.5em 0;
+  color: #8d8d8d;
+  letter-spacing: -0.05em;
+}
+
+.pagination a {
+  text-decoration: none;
+  border: 1px solid #CCCCCC;
+  padding: 3px 6px;
+  margin: 0 2px;
 }

@@ -1,27 +1,29 @@
 package tivua.action.article
 
 import scala.collection.mutable.ArrayBuffer
-import xitrum.annotation.GET
+import scala.xml.Unparsed
+
+import xitrum.annotation.GETs
 
 import tivua.action.AppAction
 import tivua.model.Article
 
-@GET("/")
+@GETs(Array("/", "/articles/page/:page"))
 class Index extends AppAction {
   override def execute {
     val page = paramo("page").getOrElse("1").toInt
     val (numPages, articles) = Article.page(page)
 
     at("title") = "Home"
-    val links   = renderPaginationLinks(numPages, page, "/articles/page/")
+    val links   = renderPaginationLinks(numPages, page, "/articles/page/%s")
     renderView(ArrayBuffer(
       links,
       <ul class="articles">
         {for (a <- articles) yield
           <li>
-            <h2><a href={"/articles/" + a.id}>{a.title}</a></h2>
+            <h1><a href={"/articles/" + a.id}>{a.title}</a></h1>
             <div>
-              {a.teaser}
+              {Unparsed(a.teaser)}
             </div>
           </li>
         }

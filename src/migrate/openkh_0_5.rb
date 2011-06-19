@@ -1,9 +1,18 @@
-# This program migrates data and uploaded files from OpenKH 0.5 to LiKH
+# This program migrates data and uploaded files from OpenKH 0.5 to Tivua.
+# OpenKH uses PostgreSQL, Tivua uses MongoDB.
 #
 # Required gems:
-#   dbi
-#   dbd-pg
-#   nokogiri
+# * dbi and dbd-pg: for accessing PostgreSQL
+# * nokogiri:       for fixing malformed HTML in OpenKH DB
+# * mongodb:        for acessing MongoDB
+# * htmlentities:   for decoding "&#272;a s&#7889;" to "Đa số" etc.
+
+require 'rubygems'
+require 'yaml'
+require 'dbi'
+require 'nokogiri'
+require 'mongo'
+require 'htmlentities'
 
 DB = {
   :adapter  => 'DBI:Pg',
@@ -12,42 +21,40 @@ DB = {
   :username => 'postgres',
   :password => 'postgres',
   :openkh   => 'openkh',
-  :colinh   => 'colinh'
+  :tivua    => 'tivua'
 }
 
-require 'rubygems'
-require 'yaml'
-require 'dbi'
-require 'nokogiri'  # For fixing malformed HTML
-
 def fix_malformed_html(html)
-  Nokogiri::HTML(html).xpath("//body").children.to_xml
+  Nokogiri::HTML(html, 'UTF-8').xpath("//body").children.to_s
 end
 
 #-------------------------------------------------------------------------------
-# Helpers to play with PostgreSQL sequences
-
-def currval(seq)
-  $colinh.select_one("SELECT CASE WHEN is_called THEN last_value ELSE last_value-increment_by END from #{seq}")[0]
-end
-
-def setval(seq, val)
-  $colinh.select_one("SELECT setval('#{seq}', #{val}, true)")
-end
 
 def convert_articles
+  article_coll = $tivua.collection("articles")
+  coder = HTMLEntities.new
+
   $openkh.select_all("SELECT * FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |a|
     title      = a[:title]
     obj        = YAML::load(a[:_body])
-    teaser     = fix_malformed_html(obj[0])
-    body       = fix_malformed_html(obj[1])
+    teaser     = coder.decode(fix_malformed_html(obj[0]))
+    body       = coder.decode(fix_malformed_html(obj[1]))
     hits       = 100
-    created_at = Time.now.to_s
-    updated_at = Time.now.to_s
-    user_id    = 1
+    created_at = Time.now
+    updated_at = Time.now
+    user_id    = "1"
 
-    $colinh.do("INSERT INTO articles(title, teaser, body, sticky, hits, createdat, updatedat, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      title, teaser, body, false, hits, created_at, updated_at, user_id)
+    # title, teaser, body, false, hits, created_at, updated_at, user_id
+    article_coll.insert(
+      "title"      => title,
+      "teaser"     => teaser,
+      "body"       => body,
+      "sticky"     => false,
+      "hits"       => hits,
+      "created_at" => created_at,
+      "updated_at" => updated_at,
+      "user_id"    => user_id
+    )
   end
 end
 
@@ -58,17 +65,10 @@ $url_conversion_table = {}
 
 def main
   $openkh = DBI.connect("#{DB[:adapter]}:#{DB[:openkh]}:#{DB[:host]}:#{DB[:port]}", DB[:username], DB[:password])
-  $colinh = DBI.connect("#{DB[:adapter]}:#{DB[:colinh]}:#{DB[:host]}:#{DB[:port]}", DB[:username], DB[:password])
-
-#  $colinh.do('DELETE FROM user_');             setval('user__id_seq',         1)
-#  $colinh.do('DELETE FROM category');           setval('category_id_seq',       1)
-  $colinh.do('DELETE FROM article');            setval('article_id_seq',        1)
-#  $colinh.do('DELETE FROM articlescategories')
-#  $colinh.do('DELETE FROM comment_t');          setval('comment_t_id_seq',      1)
+  $tivua  = Mongo::Connection.new.db(DB[:tivua])
 
   convert_articles
 
   $openkh.disconnect
-  $colinh.disconnect
 end
 main
