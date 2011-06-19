@@ -28,4 +28,15 @@ trait AppHelper {
       {if (range3.min > range2.max + 1) <span> ... {visualize(range3)}</span> else visualize(range2.max + 1 to range3.max)}
     </div>
   }
+
+  def titleInUrl(title: String) = unAccent(title).replace('/', '-').replace(' ', '-')
+
+  private def unAccent(s: String) = {
+    import java.text.Normalizer
+    import java.util.regex.Pattern
+
+    val tmp = Normalizer.normalize(s, Normalizer.Form.NFD)
+    val pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
+    pattern.matcher(tmp).replaceAll("").replace('đ', 'd').replace('Đ', 'D')
+  }
 }

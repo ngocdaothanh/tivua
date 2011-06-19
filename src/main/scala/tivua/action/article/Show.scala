@@ -7,7 +7,7 @@ import xitrum.annotation.GET
 import tivua.action.AppAction
 import tivua.model.Article
 
-@GET("/articles/:id")
+@GET("/articles/:id/:titleInUrl")
 class Show extends AppAction {
   override def execute {
     val id = param("id")

@@ -21,7 +21,7 @@ class Index extends AppAction {
       <ul class="articles">
         {for (a <- articles) yield
           <li>
-            <h1><a href={"/articles/" + a.id}>{a.title}</a></h1>
+            <h1><a href={"/articles/" + a.id + "/" + titleInUrl(a.title)}>{a.title}</a></h1>
             <div>
               {Unparsed(a.teaser)}
             </div>
