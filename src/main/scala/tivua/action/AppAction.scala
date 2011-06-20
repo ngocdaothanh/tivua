@@ -6,6 +6,7 @@ import xitrum.view.DocType
 import tivua.Config
 import tivua.action.article.{Index, New}
 import tivua.helper.{AppHelper, CategoryHelper}
+import tivua.model.Category
 
 trait AppAction extends Action with AppHelper with CategoryHelper {
   override def layout = Some(() => DocType.xhtmlTransitional(
@@ -48,7 +49,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
 
             <fb:login-button show-faces="true"></fb:login-button>
 
-            {if (Var.rCategory.isDefined) renderCategoryToc(Var.rCategory.get)}
+            {if (Var.rCategory.isDefined) renderCategoryToc(Var.rCategory.get) else renderCategoryToc(Category.uncategorized)}
           </div>
 
           <div class="clear"></div>

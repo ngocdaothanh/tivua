@@ -47,6 +47,16 @@ object Category {
     categoryo.map { category => (category, Article.page(page, category.articleIds)) }
   }
 
+  def uncategorized = {
+    val cur = coll.find(MongoDBObject("name" -> "")).limit(1)
+    val buffer = new ArrayBuffer[Category]
+    for (o <- cur) {
+      val c = mongoToScala(o)
+      buffer.append(c)
+    }
+    buffer.first
+  }
+
   //----------------------------------------------------------------------------
 
   private def mongoToScala(mongo: DBObject) = {

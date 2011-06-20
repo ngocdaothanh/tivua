@@ -13,17 +13,19 @@ trait CategoryHelper extends AppHelper {
     val categories = Category.all
 
     <div>
-      Categories:
+      <h3>Categories</h3>
       <ul>
-        {categories.map { c => <li><a href={urlFor[Show]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a></li> }}
-        <li>Uncategorized</li>
+        {categories.map { c =>
+          val name = if (c.name.isEmpty) "Uncategorized" else c.name
+          <li><a href={urlFor[Show]("id" -> c.id, "nameInUrl" -> titleInUrl(name))}>{name}</a></li> }
+        }
       </ul>
     </div>
   }
 
   def renderCategoryToc(category: Category) =
     <div>
-      <h2>Contents</h2>
+      <h3>Contents</h3>
       {Unparsed(category.toc)}
     </div>
 }
