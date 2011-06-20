@@ -5,14 +5,12 @@
 # * dbi and dbd-pg: for accessing PostgreSQL
 # * nokogiri:       for fixing malformed HTML in OpenKH DB
 # * mongodb:        for acessing MongoDB
-# * htmlentities:   for decoding "&#272;a s&#7889;" to "Đa số" etc.
 
 require 'rubygems'
 require 'yaml'
 require 'dbi'
 require 'nokogiri'
 require 'mongo'
-require 'htmlentities'
 
 DB = {
   :adapter  => 'DBI:Pg',
@@ -27,7 +25,10 @@ DB = {
 def fix_malformed_html(html)
   html2 = Nokogiri::HTML(html, 'UTF-8').xpath("//body").children.to_s
 
-  HTMLEntities.new.decode(html2)
+  # Decode "&#272;a s&#7889;" to "Đa số" etc.
+  # "htmlentities" gem cannot be used because it also decode "&lt;" to "<" etc.
+  #HTMLEntities.new.decode(html2)
+  html2.gsub(/(&#(\d+);)/) { [$2.to_i(10)].pack('U') }
 end
 
 #-------------------------------------------------------------------------------
