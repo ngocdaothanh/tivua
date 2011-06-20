@@ -18,4 +18,8 @@ libraryDependencies += "ch.qos.logback"     %   "logback-classic" % "0.9.29"
 
 libraryDependencies += "com.mongodb.casbah" %%  "casbah"          % "2.1.5-1"
 
+// For "sbt console"
+unmanagedClasspath in Compile <+= (baseDirectory) map { bd => Attributed.blank(bd / "config") }
+
+// For "sbt run"
 unmanagedClasspath in Runtime <+= (baseDirectory) map { bd => Attributed.blank(bd / "config") }
