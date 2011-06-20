@@ -116,7 +116,7 @@ def convert_forums_and_comments
 
   forums.each do |forum|
     comments = []
-    $openkh.select_all("SELECT * FROM comments WHERE node_id = " + forum[:node_id].to_s) do |r|
+    $openkh.select_all("SELECT * FROM comments WHERE node_id = " + forum[:node_id].to_s + " ORDER BY created_at") do |r|
       comment = {
         :node_id    => r[:node_id],
         :body       => fix_malformed_html(r[:message]),
@@ -170,6 +170,7 @@ def convert_categories_and_tocs
   end
 
   # Uncategorized
+  uncategorized_doc_ids = Set.new($node_id_to_doc_id.values)
   categories[0] = {
     :name     => "",
     :position => 99
@@ -178,29 +179,40 @@ def convert_categories_and_tocs
   # TOCs
   $openkh.select_all("SELECT * FROM node_versions INNER JOIN nodes ON nodes.type = 'Toc' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
     category_id = r[:sticky]
-    toc         = r[:_body]
-
+    toc         = fix_malformed_html(r[:_body])
     categories[category_id][:toc] = toc
   end
 
   # article_ids
-  category_id_to_doc_id = {}
-
   categories.each do |category_id, name_position_toc|
-    article_ids = []
+    next if category_id == 0  # Uncategorized
+
+    doc_ids = []
     $openkh.select_all("SELECT * FROM categories_nodes WHERE category_id = " + category_id.to_s) do |r|
-      doc_id = $node_id_to_doc_id[r[:node_id]]
-      article_ids << doc_id unless doc_id.nil?
+      node_id = r[:node_id]
+      doc_id  = $node_id_to_doc_id[node_id]
+      unless doc_id.nil?
+        doc_ids << doc_id
+        uncategorized_doc_ids.delete(doc_id)
+      end
     end
 
     doc_id = category_coll.insert(
       "name"        => name_position_toc[:name],
       "position"    => name_position_toc[:position],
       "toc"         => name_position_toc[:toc],
-      "article_ids" => article_ids
+      "article_ids" => doc_ids
     )
-    category_id_to_doc_id[category_id] = doc_id.to_s
   end
+
+  # Insert category "Uncategorized"
+  name_position_toc = categories[0]
+  doc_id = category_coll.insert(
+    "name"        => name_position_toc[:name],
+    "position"    => name_position_toc[:position],
+    "toc"         => name_position_toc[:toc],
+    "article_ids" => uncategorized_doc_ids.to_a
+  )
 end
 
 #-------------------------------------------------------------------------------
