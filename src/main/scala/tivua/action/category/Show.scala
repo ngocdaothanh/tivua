@@ -1,8 +1,9 @@
 package tivua.action.category
 
+import org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import xitrum.annotation.GETs
 
-import tivua.action.AppAction
+import tivua.action.{AppAction, Var}
 import tivua.helper.ArticleHelper
 import tivua.model.Category
 
@@ -15,15 +16,19 @@ class Show extends AppAction with ArticleHelper {
 
     Category.articlesPage(id, page) match {
       case None =>
-        at("title") = "Category"
-        renderView("Category not found")
+        response.setStatus(NOT_FOUND)
+        val title = "Category not found"
+        Var.rTitle.set(title)
+        renderView(title)
 
       case Some((category, (numPages, articles))) =>
-        at("title") = "Category %s".format(category.name)
-        val links   = renderPaginationLinks(numPages, page, "/categories/" + id + "/" + nameInUrl + "/%s")
+        val title = "Category: %s".format(category.name)
+        Var.rTitle.set(title)
+        Var.rCategory.set(category)
+        val links = renderPaginationLinks(numPages, page, "/categories/" + id + "/" + nameInUrl + "/%s")
         renderView(
           <div>
-            <b>{"Category: %s".format(category.name)}</b>
+            <b>{title}</b>
             <hr />
 
             {links}

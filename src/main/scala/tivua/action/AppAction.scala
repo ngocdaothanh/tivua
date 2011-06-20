@@ -14,7 +14,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
         {xitrumHead}
 
         <meta content="text/html; charset=utf-8" http-equiv="content-type" />
-        <title>{Config.siteName} - {at("title")}</title>
+        <title>{if (Var.rTitle.isDefined) Config.siteName + " - " + Var.rTitle.get else Config.siteName}</title>
 
         <link type="image/vnd.microsoft.icon" rel="shortcut icon" href="/favicon.ico" />
 
@@ -42,12 +42,13 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
             {renderCategories}
 
             <a href={urlFor[New]}>Create new article</a>
-            <br /><br /><br />
+
+            <fb:profile-pic uid="12345" facebook-logo="true" />
             <fb:name uid="12345"></fb:name>
 
             <fb:login-button show-faces="true"></fb:login-button>
 
-            <fb:profile-pic uid="12345" facebook-logo="true" />
+            {if (Var.rCategory.isDefined) renderCategoryToc(Var.rCategory.get)}
           </div>
 
           <div class="clear"></div>

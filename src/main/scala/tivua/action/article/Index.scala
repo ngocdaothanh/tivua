@@ -2,7 +2,7 @@ package tivua.action.article
 
 import xitrum.annotation.GETs
 
-import tivua.action.AppAction
+import tivua.action.{AppAction, Var}
 import tivua.helper.ArticleHelper
 import tivua.model.Article
 
@@ -12,7 +12,7 @@ class Index extends AppAction with ArticleHelper {
     val page = paramo("page").getOrElse("1").toInt
     val (numPages, articles) = Article.page(page)
 
-    at("title") = "Home"
+    Var.rTitle.set("Home")
     val links   = renderPaginationLinks(numPages, page, "/articles/page/%s")
     renderView(
       <div>

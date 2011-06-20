@@ -1,5 +1,6 @@
 package tivua.helper
 
+import scala.xml.Unparsed
 import xitrum.Action
 
 import tivua.action.category.Show
@@ -19,4 +20,10 @@ trait CategoryHelper extends AppHelper {
       </ul>
     </div>
   }
+
+  def renderCategoryToc(category: Category) =
+    <div>
+      <h2>Contents</h2>
+      {Unparsed(category.toc)}
+    </div>
 }

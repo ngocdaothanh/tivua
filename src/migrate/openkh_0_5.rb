@@ -158,33 +158,48 @@ def convert_forums_and_comments
 end
 
 def convert_categories_and_tocs
+  # Categories
   category_coll = $tivua.collection("categories")
 
-  categories = []
+  categories = {}
   $openkh.select_all("SELECT * FROM categories") do |r|
-    category = {
-      :id       => r[:id],
+    categories[r[:id]] = {
       :name     => r[:name],
       :position => r[:position]
     }
-    categories << category
   end
 
+  # Uncategorized
+  categories[0] = {
+    :name     => "",
+    :position => 99
+  }
+
+  # TOCs
+  $openkh.select_all("SELECT * FROM node_versions INNER JOIN nodes ON nodes.type = 'Toc' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
+    category_id = r[:sticky]
+    toc         = r[:_body]
+
+    categories[category_id][:toc] = toc
+  end
+
+  # article_ids
   category_id_to_doc_id = {}
 
-  categories.each do |category|
+  categories.each do |category_id, name_position_toc|
     article_ids = []
-    $openkh.select_all("SELECT * FROM categories_nodes WHERE category_id = " + category[:id].to_s) do |r|
+    $openkh.select_all("SELECT * FROM categories_nodes WHERE category_id = " + category_id.to_s) do |r|
       doc_id = $node_id_to_doc_id[r[:node_id]]
       article_ids << doc_id unless doc_id.nil?
     end
 
     doc_id = category_coll.insert(
-      "name"        => category[:name],
-      "position"    => category[:position],
+      "name"        => name_position_toc[:name],
+      "position"    => name_position_toc[:position],
+      "toc"         => name_position_toc[:toc],
       "article_ids" => article_ids
     )
-    category_id_to_doc_id[category[:id]] = doc_id.to_s
+    category_id_to_doc_id[category_id] = doc_id.to_s
   end
 end
 

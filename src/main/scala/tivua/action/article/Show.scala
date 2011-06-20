@@ -4,7 +4,7 @@ import scala.xml.Unparsed
 import org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import xitrum.annotation.GET
 
-import tivua.action.AppAction
+import tivua.action.{AppAction, Var}
 import tivua.helper.ArticleHelper
 import tivua.model.{Article, Comment}
 
@@ -15,14 +15,14 @@ class Show extends AppAction with ArticleHelper {
     Article.first(id) match {
       case None =>
         response.setStatus(NOT_FOUND)
-        flash("Not found")
-        at("title") = "Not found"
-        renderView("")
+        val title = "Article not found"
+        Var.rTitle.set(title)
+        renderView(title)
 
       case Some(article) =>
         val comments = Comment.all(article.id)
 
-        at("title") = article.title
+        Var.rTitle.set(article.title)
         renderView(
           <div>
             <div class="article">

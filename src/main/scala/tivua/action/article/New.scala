@@ -2,7 +2,7 @@ package tivua.action.article
 
 import xitrum.annotation.GET
 
-import tivua.action.AppAction
+import tivua.action.{AppAction, Var}
 import tivua.model.Article
 
 @GET(value="/articles/new", first=true)
@@ -10,7 +10,7 @@ class New extends AppAction {
   override def execute {
     val article = new Article
 
-    at("title") = "Create new article"
+    Var.rTitle.set("Create new article")
     renderView(
       <form method="post" enctype="multipart/form-data">
         <label>Title</label>
