@@ -38,7 +38,7 @@ trait AppAction extends Action with AppHelper {
             {renderedView}
           </div>
 
-          <div id="sidebar" class="grid_4">
+          <div id="sidebar" class="grid_3">
             <a href={urlFor[New]}>Create new article</a>
             <br /><br /><br />
             <fb:name uid="12345"></fb:name>
@@ -51,7 +51,7 @@ trait AppAction extends Action with AppHelper {
           <div class="clear"></div>
 
           <hr />
-          <div id="footer">Powered by Tivua</div>
+          <div id="footer">Powered by <a href="https://github.com/ngocdaothanh/tivua">Tivua</a></div>
 
           <div id="fb-root"></div>
         </div>

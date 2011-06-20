@@ -2,8 +2,13 @@
   font-size: 35px;
 }
 
-#header h1 a {
+a {
   text-decoration: none;
+}
+
+#sidebar {
+  border-left: 1px solid gray;
+  padding-left: 1em;
 }
 
 #footer {
@@ -79,6 +84,6 @@ pre {
 
 .comment {
   background-color: #EDEFF4;
-  padding: 1em;
-  margin-bottom: 1em;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
 }

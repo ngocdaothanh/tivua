@@ -35,6 +35,8 @@ class Index extends AppAction with ArticleHelper {
       {renderArticleMetaData(article)}
       <div>{Unparsed(article.teaser)}</div>
 
+      <p><a href={url}>→ Read more</a></p>
+
       {if (commento.isDefined) {
         <div>{renderComment(commento.get)}</div>
       }}

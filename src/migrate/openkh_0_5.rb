@@ -32,9 +32,11 @@ end
 
 #-------------------------------------------------------------------------------
 
+$node_id_to_doc_id = {}
+$url_conversion_table = {}
+
 def convert_articles
   article_coll = $tivua.collection("articles")
-  node_id_to_doc_id = {}
 
   $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
     node_id    = r[:node_id]
@@ -48,7 +50,6 @@ def convert_articles
     updated_at = r[:created_at].to_time
     user_id    = r[:user_id].to_s
 
-    # title, teaser, body, false, hits, created_at, updated_at, user_id
     doc_id = article_coll.insert(
       "title"      => title,
       "teaser"     => teaser,
@@ -60,15 +61,70 @@ def convert_articles
       "user_id"    => user_id
     )
 
-    node_id_to_doc_id[node_id] = doc_id.to_s
+    $node_id_to_doc_id[node_id] = doc_id.to_s
   end
-
-  node_id_to_doc_id
 end
 
-def convert_comments(node_id_to_doc_id)
+def convert_forums_and_comments
+  article_coll = $tivua.collection("articles")
   comment_coll = $tivua.collection("comments")
-  coder = HTMLEntities.new
+
+count = 0
+
+  forums = []
+  $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Forum' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
+    forum = {
+      :node_id    => r[:node_id],
+      :title      => r[:title],
+      :hits       => r[:views],
+      :sticky     => r[:sticky] != 0
+    }
+    forums << forum
+  end
+
+  forums.each do |forum|
+    comments = []
+    $openkh.select_all("SELECT * FROM comments WHERE node_id = " + forum[:node_id].to_s) do |r|
+      comment = {
+        :node_id    => r[:node_id],
+        :body       => fix_malformed_html(r[:message]),
+        :user_id    => r[:user_id].to_s,
+        :created_at => r[:created_at].to_time,
+        :updated_at => r[:updated_at].to_time
+      }
+      comments << comment
+    end
+
+count = count + comments.size
+
+    doc_id = article_coll.insert(
+      "title"      => forum[:title],
+      "teaser"     => comments[0][:body],
+      "body"       => "",
+      "sticky"     => forum[:sticky],
+      "hits"       => forum[:hits],
+      "created_at" => comments[0][:created_at],
+      "updated_at" => comments[0][:updated_at],
+      "user_id"    => comments[0][:user_id]
+    )
+
+    article_id = doc_id.to_s
+    comments[1..-1].each do |comment|
+      comment_coll.insert(
+        "article_id" => article_id,
+        "user_id"    => comment[:user_id],
+        "body"       => comment[:body],
+        "created_at" => comment[:created_at],
+        "updated_at" => comment[:updated_at]
+      )
+    end
+  end
+
+puts count
+end
+
+def convert_comments
+  comment_coll = $tivua.collection("comments")
 
 count = 0
 
@@ -79,11 +135,10 @@ count = 0
     created_at = r[:created_at].to_time
     updated_at = r[:updated_at].to_time
 
-    article_id = node_id_to_doc_id[node_id]
+    article_id = $node_id_to_doc_id[node_id]
 
     if article_id.nil?
       count = count + 1
-      puts body
     end
 
     unless article_id.nil?
@@ -102,14 +157,12 @@ end
 
 #-------------------------------------------------------------------------------
 
-# openkh -> colinh
-$url_conversion_table = {}
-
 def main
   $openkh = DBI.connect("#{DB[:adapter]}:#{DB[:openkh]}:#{DB[:host]}:#{DB[:port]}", DB[:username], DB[:password])
   $tivua  = Mongo::Connection.new.db(DB[:tivua])
 
-  node_id_to_doc_id = convert_articles
-  convert_comments(node_id_to_doc_id)
+  convert_articles
+  convert_forums_and_comments
+  convert_comments
 end
 main
