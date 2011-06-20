@@ -5,9 +5,9 @@ import xitrum.view.DocType
 
 import tivua.Config
 import tivua.action.article.{Index, New}
-import tivua.helper.AppHelper
+import tivua.helper.{AppHelper, CategoryHelper}
 
-trait AppAction extends Action with AppHelper {
+trait AppAction extends Action with AppHelper with CategoryHelper {
   override def layout = Some(() => DocType.xhtmlTransitional(
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
@@ -39,6 +39,8 @@ trait AppAction extends Action with AppHelper {
           </div>
 
           <div id="sidebar" class="grid_3">
+            {renderCategories}
+
             <a href={urlFor[New]}>Create new article</a>
             <br /><br /><br />
             <fb:name uid="12345"></fb:name>

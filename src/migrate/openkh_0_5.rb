@@ -35,7 +35,8 @@ end
 $node_id_to_doc_id = {}
 $url_conversion_table = {}
 
-def convert_articles
+def convert_articles_and_comments
+  # Articles
   article_coll = $tivua.collection("articles")
 
   $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
@@ -63,70 +64,11 @@ def convert_articles
 
     $node_id_to_doc_id[node_id] = doc_id.to_s
   end
-end
 
-def convert_forums_and_comments
-  article_coll = $tivua.collection("articles")
+  # Comments
   comment_coll = $tivua.collection("comments")
 
-count = 0
-
-  forums = []
-  $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Forum' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
-    forum = {
-      :node_id    => r[:node_id],
-      :title      => r[:title],
-      :hits       => r[:views],
-      :sticky     => r[:sticky] != 0
-    }
-    forums << forum
-  end
-
-  forums.each do |forum|
-    comments = []
-    $openkh.select_all("SELECT * FROM comments WHERE node_id = " + forum[:node_id].to_s) do |r|
-      comment = {
-        :node_id    => r[:node_id],
-        :body       => fix_malformed_html(r[:message]),
-        :user_id    => r[:user_id].to_s,
-        :created_at => r[:created_at].to_time,
-        :updated_at => r[:updated_at].to_time
-      }
-      comments << comment
-    end
-
-count = count + comments.size
-
-    doc_id = article_coll.insert(
-      "title"      => forum[:title],
-      "teaser"     => comments[0][:body],
-      "body"       => "",
-      "sticky"     => forum[:sticky],
-      "hits"       => forum[:hits],
-      "created_at" => comments[0][:created_at],
-      "updated_at" => comments[0][:updated_at],
-      "user_id"    => comments[0][:user_id]
-    )
-
-    article_id = doc_id.to_s
-    comments[1..-1].each do |comment|
-      comment_coll.insert(
-        "article_id" => article_id,
-        "user_id"    => comment[:user_id],
-        "body"       => comment[:body],
-        "created_at" => comment[:created_at],
-        "updated_at" => comment[:updated_at]
-      )
-    end
-  end
-
-puts count
-end
-
-def convert_comments
-  comment_coll = $tivua.collection("comments")
-
-count = 0
+  count = 0
 
   $openkh.select_all("SELECT * FROM comments") do |r|
     node_id    = r[:node_id]
@@ -155,14 +97,105 @@ count = 0
   puts count
 end
 
+def convert_forums_and_comments
+  article_coll = $tivua.collection("articles")
+  comment_coll = $tivua.collection("comments")
+
+  count = 0
+
+  forums = []
+  $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Forum' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
+    forum = {
+      :node_id    => r[:node_id],
+      :title      => r[:title],
+      :hits       => r[:views],
+      :sticky     => r[:sticky] != 0
+    }
+    forums << forum
+  end
+
+  forums.each do |forum|
+    comments = []
+    $openkh.select_all("SELECT * FROM comments WHERE node_id = " + forum[:node_id].to_s) do |r|
+      comment = {
+        :node_id    => r[:node_id],
+        :body       => fix_malformed_html(r[:message]),
+        :user_id    => r[:user_id].to_s,
+        :created_at => r[:created_at].to_time,
+        :updated_at => r[:updated_at].to_time
+      }
+      comments << comment
+    end
+
+    count = count + comments.size
+
+    doc_id = article_coll.insert(
+      "title"      => forum[:title],
+      "teaser"     => comments[0][:body],
+      "body"       => "",
+      "sticky"     => forum[:sticky],
+      "hits"       => forum[:hits],
+      "created_at" => comments[0][:created_at],
+      "updated_at" => comments[0][:updated_at],
+      "user_id"    => comments[0][:user_id]
+    )
+
+    article_id = doc_id.to_s
+    $node_id_to_doc_id[forum[:node_id]] = article_id
+
+    comments[1..-1].each do |comment|
+      comment_coll.insert(
+        "article_id" => article_id,
+        "user_id"    => comment[:user_id],
+        "body"       => comment[:body],
+        "created_at" => comment[:created_at],
+        "updated_at" => comment[:updated_at]
+      )
+    end
+  end
+
+  puts count
+end
+
+def convert_categories_and_tocs
+  category_coll = $tivua.collection("categories")
+
+  categories = []
+  $openkh.select_all("SELECT * FROM categories") do |r|
+    category = {
+      :id       => r[:id],
+      :name     => r[:name],
+      :position => r[:position]
+    }
+    categories << category
+  end
+
+  category_id_to_doc_id = {}
+
+  categories.each do |category|
+    article_ids = []
+    $openkh.select_all("SELECT * FROM categories_nodes WHERE category_id = " + category[:id].to_s) do |r|
+      doc_id = $node_id_to_doc_id[r[:node_id]]
+      article_ids << doc_id unless doc_id.nil?
+    end
+
+    doc_id = category_coll.insert(
+      "name"        => category[:name],
+      "position"    => category[:position],
+      "article_ids" => article_ids
+    )
+    category_id_to_doc_id[category[:id]] = doc_id.to_s
+  end
+end
+
 #-------------------------------------------------------------------------------
 
 def main
   $openkh = DBI.connect("#{DB[:adapter]}:#{DB[:openkh]}:#{DB[:host]}:#{DB[:port]}", DB[:username], DB[:password])
   $tivua  = Mongo::Connection.new.db(DB[:tivua])
 
-  convert_articles
+  convert_articles_and_comments
   convert_forums_and_comments
-  convert_comments
+  convert_categories_and_tocs
 end
 main
