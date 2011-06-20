@@ -1,8 +1,11 @@
 package tivua.helper
 
 import scala.collection.immutable.Range.Inclusive
+import xitrum.Action
 
 trait AppHelper {
+  this: Action =>
+
   /**
    * @param urlFormat Typically "/pages/%s"
    */

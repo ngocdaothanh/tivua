@@ -39,13 +39,12 @@ object Category {
     }
     buffer
   }
-/*
-  def articles(id: String): Iterable[Article] = {
-    val category = coll.findOneByID(new ObjectId(id)).map(mongoToScala)
-    //category.articleIds
 
+  def articlesPage(id: String, page: Int): Option[(Category, (Int, Iterable[Article]))] = {
+    val categoryo = coll.findOneByID(new ObjectId(id)).map(mongoToScala)
+    categoryo.map { category => (category, Article.page(page, category.articleIds)) }
   }
-*/
+
   //----------------------------------------------------------------------------
 
   private def mongoToScala(mongo: DBObject) = {

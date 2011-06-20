@@ -44,7 +44,8 @@ object Article {
   //----------------------------------------------------------------------------
 
   def page(p: Int): (Int, Iterable[Article]) = {
-    val numPages = coll.count.toInt / ITEMS_PER_PAGE
+    val count = coll.count.toInt
+    val numPages = (count / ITEMS_PER_PAGE) + (if (count % ITEMS_PER_PAGE == 0) 0 else 1)
 
     val cur = coll.find().sort(MongoDBObject("updated_at" -> -1)).skip((p - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
     val buffer = new ArrayBuffer[Article]
@@ -54,6 +55,18 @@ object Article {
     }
 
     (numPages, buffer)
+  }
+
+  def page(p: Int, ids: Array[String]): (Int, Iterable[Article]) = {
+    val count = ids.length
+    val numPages = (count / ITEMS_PER_PAGE) + (if (count % ITEMS_PER_PAGE == 0) 0 else 1)
+
+    val min = (p - 1) * ITEMS_PER_PAGE
+    val max1 = p * ITEMS_PER_PAGE
+    val max2 = if (max1 > count - 1) count - 1 else max1
+    val articles = (min to max2).flatMap { id => first(ids(id)) }
+
+    (numPages, articles)
   }
 
   def first(id: String): Option[Article] = coll.findOneByID(new ObjectId(id)).map(mongoToScala)

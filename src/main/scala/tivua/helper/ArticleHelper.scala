@@ -2,11 +2,32 @@ package tivua.helper
 
 import java.text.SimpleDateFormat
 import scala.xml.Unparsed
+import xitrum.Action
 
+import tivua.action.article.Show
 import tivua.model.{Article, Comment}
 
-trait ArticleHelper {
+trait ArticleHelper extends AppHelper {
+  this: Action =>
+
   private val dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm")
+
+  def renderArticlePreview(article: Article) = {
+    val commento = Comment.lastComment(article.id)
+    val url = urlFor[Show]("id" -> article.id, "titleInUrl" -> titleInUrl(article.title))
+
+    <div>
+      <h1><a href={url}>{article.title}</a></h1>
+      {renderArticleMetaData(article)}
+      <div>{Unparsed(article.teaser)}</div>
+
+      <p><a href={url}>→ Read more</a></p>
+
+      {if (commento.isDefined) {
+        <div>{renderComment(commento.get)}</div>
+      }}
+    </div>
+  }
 
   def renderArticleMetaData(article: Article) = {
     <div class="article_metadata">
