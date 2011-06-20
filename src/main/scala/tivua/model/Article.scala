@@ -8,15 +8,16 @@ import org.bson.types.ObjectId
 
 class Article(
     var id:        String,
+    var userId:    String,
     var title:     String,
     var teaser:    String,
     var body:      String,
     var sticky:    Boolean,
     var hits:      Int,
     var createdAt: Date,
-    var updatedAt: Date,
-    var userId:    String) {
-  def this() = this("", "", "", "", false, 1, null, null, "")
+    var updatedAt: Date) {
+
+  def this() = this(null, null, "", "", "", false, 1, null, null)
 }
 
 object ArticleColl {
@@ -42,20 +43,10 @@ object Article {
 
   //----------------------------------------------------------------------------
 
-  def all: Iterable[Article] = {
-    val cur = coll.find
-    val buffer = new ArrayBuffer[Article]
-    for (o <- cur) {
-      val a = mongoToScala(o)
-      buffer.append(a)
-    }
-    buffer
-  }
-
   def page(p: Int): (Int, Iterable[Article]) = {
     val numPages = coll.count.toInt / ITEMS_PER_PAGE
 
-    val cur = coll.find().skip((p - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+    val cur = coll.find().sort(MongoDBObject("updated_at" -> -1)).skip((p - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
     val buffer = new ArrayBuffer[Article]
     for (o <- cur) {
       val a = mongoToScala(o)
@@ -69,7 +60,7 @@ object Article {
 
   //----------------------------------------------------------------------------
 
-  def mongoToScala(mongo: DBObject): Article = {
+  private def mongoToScala(mongo: DBObject) = {
     val id        = mongo._id.get.toString
     val title     = mongo.as[String] (TITLE)
     val teaser    = mongo.as[String] (TEASER)
@@ -80,6 +71,6 @@ object Article {
     val updatedAt = mongo.as[Date]   (UPDATED_AT)
     val userId    = mongo.as[String] (USER_ID)
 
-    new Article(id, title, teaser, body, sticky, hits, createdAt, updatedAt, userId)
+    new Article(id, userId, title, teaser, body, sticky, hits, createdAt, updatedAt)
   }
 }

@@ -35,8 +35,12 @@ trait AppHelper {
     import java.text.Normalizer
     import java.util.regex.Pattern
 
+    // http://www.rgagnon.com/javadetails/java-0456.html
     val tmp = Normalizer.normalize(s, Normalizer.Form.NFD)
     val pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
-    pattern.matcher(tmp).replaceAll("").replace('đ', 'd').replace('Đ', 'D')
+    val ret = pattern.matcher(tmp).replaceAll("")
+
+    // The above does not work for đ and Đ
+    ret.replace('đ', 'd').replace('Đ', 'D')
   }
 }

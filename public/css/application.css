@@ -8,6 +8,8 @@
 
 #footer {
   font-weight: bold;
+  text-align: center;
+  margin-bottom: 1em;
 }
 
 .notice {
@@ -20,12 +22,17 @@
   font-weight: bold;
 }
 
-ul.articles {
+ul.articles, ul.comments {
   list-style-type: none;
 }
 
-ul.articles > li {
+ul.articles > li, ul.comments > li {
   margin-left: 0;
+}
+
+.article_metadata, .comment_metadata {
+  color: gray;
+  margin-bottom: 1em;
 }
 
 input[type="text"], textarea {
@@ -51,4 +58,27 @@ textarea.article_body {
   border: 1px solid #CCCCCC;
   padding: 3px 6px;
   margin: 0 2px;
+}
+
+pre {
+  background-color: #DDE0BE;
+  font-size: smaller;
+  overflow: auto;
+  // Hack to force word-wrap for <pre>
+  // Mozilla
+  white-space: -moz-pre-wrap;
+  // Opera 4-6
+  white-space: -pre-wrap;
+  // Opera 7
+  white-space: -o-pre-wrap;
+  // CSS3
+  white-space: pre-wrap;
+  // IE 5.5+
+  word-wrap: break-word;
+}
+
+.comment {
+  background-color: #EDEFF4;
+  padding: 1em;
+  margin-bottom: 1em;
 }

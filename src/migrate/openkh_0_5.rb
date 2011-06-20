@@ -25,37 +25,79 @@ DB = {
 }
 
 def fix_malformed_html(html)
-  Nokogiri::HTML(html, 'UTF-8').xpath("//body").children.to_s
+  html2 = Nokogiri::HTML(html, 'UTF-8').xpath("//body").children.to_s
+
+  HTMLEntities.new.decode(html2)
 end
 
 #-------------------------------------------------------------------------------
 
 def convert_articles
   article_coll = $tivua.collection("articles")
-  coder = HTMLEntities.new
+  node_id_to_doc_id = {}
 
-  $openkh.select_all("SELECT * FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |a|
-    title      = a[:title]
-    obj        = YAML::load(a[:_body])
-    teaser     = coder.decode(fix_malformed_html(obj[0]))
-    body       = coder.decode(fix_malformed_html(obj[1]))
-    hits       = 100
+  $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
+    node_id    = r[:node_id]
+    title      = r[:title]
+    obj        = YAML::load(r[:_body])
+    teaser     = fix_malformed_html(obj[0])
+    body       = fix_malformed_html(obj[1])
+    hits       = r[:views]
+    sticky     = r[:sticky] != 0
     created_at = Time.now
-    updated_at = Time.now
-    user_id    = "1"
+    updated_at = r[:created_at].to_time
+    user_id    = r[:user_id].to_s
 
     # title, teaser, body, false, hits, created_at, updated_at, user_id
-    article_coll.insert(
+    doc_id = article_coll.insert(
       "title"      => title,
       "teaser"     => teaser,
       "body"       => body,
-      "sticky"     => false,
+      "sticky"     => sticky,
       "hits"       => hits,
       "created_at" => created_at,
       "updated_at" => updated_at,
       "user_id"    => user_id
     )
+
+    node_id_to_doc_id[node_id] = doc_id.to_s
   end
+
+  node_id_to_doc_id
+end
+
+def convert_comments(node_id_to_doc_id)
+  comment_coll = $tivua.collection("comments")
+  coder = HTMLEntities.new
+
+count = 0
+
+  $openkh.select_all("SELECT * FROM comments") do |r|
+    node_id    = r[:node_id]
+    body       = fix_malformed_html(r[:message])
+    user_id    = r[:user_id].to_s
+    created_at = r[:created_at].to_time
+    updated_at = r[:updated_at].to_time
+
+    article_id = node_id_to_doc_id[node_id]
+
+    if article_id.nil?
+      count = count + 1
+      puts body
+    end
+
+    unless article_id.nil?
+      comment_coll.insert(
+        "article_id" => article_id,
+        "user_id"    => user_id,
+        "body"       => body,
+        "created_at" => created_at,
+        "updated_at" => updated_at
+      )
+    end
+  end
+
+  puts count
 end
 
 #-------------------------------------------------------------------------------
@@ -67,8 +109,7 @@ def main
   $openkh = DBI.connect("#{DB[:adapter]}:#{DB[:openkh]}:#{DB[:host]}:#{DB[:port]}", DB[:username], DB[:password])
   $tivua  = Mongo::Connection.new.db(DB[:tivua])
 
-  convert_articles
-
-  $openkh.disconnect
+  node_id_to_doc_id = convert_articles
+  convert_comments(node_id_to_doc_id)
 end
 main

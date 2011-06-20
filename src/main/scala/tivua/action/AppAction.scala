@@ -50,6 +50,7 @@ trait AppAction extends Action with AppHelper {
 
           <div class="clear"></div>
 
+          <hr />
           <div id="footer">Powered by Tivua</div>
 
           <div id="fb-root"></div>
