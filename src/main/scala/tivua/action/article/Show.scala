@@ -26,7 +26,7 @@ class Show extends AppAction with ArticleHelper {
         renderView(
           <div>
             <div class="article">
-              <h1>{article.title} {if (article.sticky) <img src="/public/img/sticky.png" />}</h1>
+              <h1>{article.title} {if (article.sticky) <img src={urlForPublic("img/sticky.png")} />}</h1>
               {renderArticleMetaData(article)}
               <div>{Unparsed(article.teaser)}</div>
               <div>{Unparsed(article.body)}</div>

@@ -27,13 +27,13 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
 
         <link type="image/vnd.microsoft.icon" rel="shortcut icon" href="/favicon.ico" />
 
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/reset.css" />
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/grid.css" />
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/fluid960gs/text.css" />
-        <link type="text/css" rel="stylesheet" media="all" href="/public/css/application.css" />
+        <link type="text/css" rel="stylesheet" media="all" href={urlForPublic("css/fluid960gs/reset.css")} />
+        <link type="text/css" rel="stylesheet" media="all" href={urlForPublic("css/fluid960gs/grid.css")} />
+        <link type="text/css" rel="stylesheet" media="all" href={urlForPublic("css/fluid960gs/text.css")} />
+        <link type="text/css" rel="stylesheet" media="all" href={urlForPublic("css/application.css")} />
 
         <script type="text/javascript" src="http://tinymce.moxiecode.com/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
-        <script type="text/javascript" src="/public/js/application.js"></script>
+        <script type="text/javascript" src={urlForPublic("js/application.js")}></script>
       </head>
       <body>
         <div class="container_12">
