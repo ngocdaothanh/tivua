@@ -12,10 +12,8 @@ class Category(
     var id:       String,
     var name:     String,
     var position: Int,
-    var toc:      String) {
-
-  def toBeCategorized = name.isEmpty
-}
+    var toc:      String,
+    var toBeCategorized: Boolean)
 
 object CategoryColl {
   val COLL     = "categories"
@@ -53,7 +51,7 @@ object Category {
     val position = mongo.as[Int]   (POSITION)
     val toc      = mongo.as[String](TOC)
 
-    val name2 = if (name.isEmpty) "To be categorized" else name
-    new Category(id, name2, position, toc)
+    val (name2, toBeCategorized) = if (name.isEmpty) ("To be categorized", true) else (name, false)
+    new Category(id, name2, position, toc, toBeCategorized)
   }
 }

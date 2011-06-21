@@ -12,7 +12,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
   beforeFilters("prepareCategories") = () => {
     val categories = Category.all
     Var.rCategories.set(categories)
-    categories.find(_.name == "").foreach(Var.rToBeCategorizedCategory.set(_))
+    categories.find(_.toBeCategorized).foreach(Var.rToBeCategorizedCategory.set(_))
 
     true
   }
