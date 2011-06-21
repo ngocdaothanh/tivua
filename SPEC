@@ -1,10 +1,11 @@
 == User
 
-Only Facebook users can login. Users of the old system (OpenKH):
-* User ID   = 0
-* User name = OpenID
+users:
+* facebook_uid
+* is_admin
 
-2 user types: admin and non-admin
+Only Facebook users can login. Users of the old system (OpenKH):
+* user_id = "openid-<OpenID>"
 
 Listing order: sorted by Facebook user ID
 
@@ -15,40 +16,45 @@ When displaying a user:
 == Article
 
 Data:
-* Title
-* Teaser (dẫn nhập, mào đầu)
-* Body
+* title
+* teaser
+* body
 
 Metadata:
-* Sticky
-* Hits
-* Credits
+* user_id
+* sticky
+* hits
+* created_at
+* updated_at
+* thread_updated_at: max(updated_at, its comments updated_at)
 
 Listing order:
-* Sticky (if any, only admin can set/unset this property)
-* Most recently modified "current version" (see below)
+* sticky (only admin can set/unset this property)
+* thread_updated_at DESC
 
-== Article version
+== Category
 
-Versioning is supported. But one user only has at most one version for each
-article: 1 user = 1 version.
+categories:
+* name
+* position
+* toc
 
-Credits: users that have edited are displayed in the order of edition
+Listing order: position
 
-When creating:
-* A version is created
-* An article is created, with "current version" set to the version just created
-
-When editing:
-* Can based on the current version or any version
-* If the has never edited this article before => new version is created;
-  otherwise his version is updated
-
-Current version:
-* When a new version is created => set to this version
-* When an existing version is edited => set to this version
-* When a new version is selected as "current"
+articles_categories:
+* article_id
+* category_id
+* thread_updated_at
 
 == Comment
+
+comments:
+* article_id
+* user_id
+* body
+* created_at
+* updated_at
+
+Listing order: created_at
 
 == Upload

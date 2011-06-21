@@ -9,26 +9,27 @@ import com.mongodb.casbah.commons.MongoDBObject
 import org.bson.types.ObjectId
 
 class Category(
-    var id:         String,
-    var name:       String,
-    var position:   Int,
-    var toc:        String,
-    var articleIds: Array[String])
+    var id:       String,
+    var name:     String,
+    var position: Int,
+    var toc:      String) {
+
+  def isUncategorized = name.isEmpty
+}
 
 object CategoryColl {
-  val COLL       = "categories"
+  val COLL     = "categories"
 
-  val ID          = "_id"
-  val NAME        = "name"
-  val POSITION    = "position"
-  val TOC         = "toc"
-  val ARTICLE_IDS = "article_ids"
+  val ID       = "_id"
+  val NAME     = "name"
+  val POSITION = "position"
+  val TOC      = "toc"
 }
 
 object Category {
   import CategoryColl._
 
-  val coll = DB.db(COLL)
+  private val coll = DB.db(COLL)
 
   //----------------------------------------------------------------------------
 
@@ -42,30 +43,16 @@ object Category {
     buffer
   }
 
-  def articlesPage(id: String, page: Int): Option[(Category, (Int, Iterable[Article]))] = {
-    val categoryo = coll.findOneByID(new ObjectId(id)).map(mongoToScala)
-    categoryo.map { category => (category, Article.page(page, category.articleIds)) }
-  }
-
-  def uncategorized = {
-    val cur = coll.find(MongoDBObject("name" -> "")).limit(1)
-    val buffer = new ArrayBuffer[Category]
-    for (o <- cur) {
-      val c = mongoToScala(o)
-      buffer.append(c)
-    }
-    buffer.first
-  }
+  def first(id: String): Option[Category] = coll.findOneByID(new ObjectId(id)).map(mongoToScala)
 
   //----------------------------------------------------------------------------
 
   private def mongoToScala(mongo: DBObject) = {
-    val id         = mongo._id.get.toString
-    val name       = mongo.as[String]     (NAME)
-    val position   = mongo.as[Int]        (POSITION)
-    val toc        = mongo.as[String]     (TOC)
-    val articleIds = mongo.as[BasicDBList](ARTICLE_IDS).toArray.map(_.toString)
+    val id       = mongo._id.get.toString
+    val name     = mongo.as[String](NAME)
+    val position = mongo.as[Int]   (POSITION)
+    val toc      = mongo.as[String](TOC)
 
-    new Category(id, name, position, toc, articleIds)
+    new Category(id, name, position, toc)
   }
 }

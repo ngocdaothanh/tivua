@@ -9,6 +9,14 @@ import tivua.helper.{AppHelper, CategoryHelper}
 import tivua.model.Category
 
 trait AppAction extends Action with AppHelper with CategoryHelper {
+  beforeFilters("prepareCategories") = () => {
+    val categories = Category.all
+    Var.rCategories.set(categories)
+    categories.find(_.name == "").foreach(Var.rUncategorizedCategory.set(_))
+
+    true
+  }
+
   override def layout = Some(() => DocType.xhtmlTransitional(
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
@@ -49,7 +57,12 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
 
             <fb:login-button show-faces="true"></fb:login-button>
 
-            {if (Var.rCategory.isDefined) renderCategoryToc(Var.rCategory.get) else renderCategoryToc(Category.uncategorized)}
+            {
+              if (Var.rCategory.isDefined)
+                renderCategoryToc(Var.rCategory.get)
+              else if (Var.rUncategorizedCategory.isDefined)
+                renderCategoryToc(Var.rUncategorizedCategory.get)
+            }
           </div>
 
           <div class="clear"></div>

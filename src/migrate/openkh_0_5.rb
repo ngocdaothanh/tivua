@@ -11,6 +11,7 @@ require 'yaml'
 require 'dbi'
 require 'nokogiri'
 require 'mongo'
+require 'bson/types/object_id'
 
 DB = {
   :adapter  => 'DBI:Pg',
@@ -41,26 +42,28 @@ def convert_articles_and_comments
   article_coll = $tivua.collection("articles")
 
   $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
-    node_id    = r[:node_id]
-    title      = r[:title]
-    obj        = YAML::load(r[:_body])
-    teaser     = fix_malformed_html(obj[0])
-    body       = fix_malformed_html(obj[1])
-    hits       = r[:views]
-    sticky     = r[:sticky] != 0
-    created_at = Time.now
-    updated_at = r[:created_at].to_time
-    user_id    = r[:user_id].to_s
+    node_id           = r[:node_id]
+    title             = r[:title]
+    obj               = YAML::load(r[:_body])
+    teaser            = fix_malformed_html(obj[0])
+    body              = fix_malformed_html(obj[1])
+    user_id           = r[:user_id].to_s
+    sticky            = r[:sticky] != 0
+    hits              = r[:views]
+    created_at        = Time.now    # FIXME
+    updated_at        = r[:created_at].to_time
+    thread_updated_at = updated_at  # FIXME
 
     doc_id = article_coll.insert(
-      "title"      => title,
-      "teaser"     => teaser,
-      "body"       => body,
-      "sticky"     => sticky,
-      "hits"       => hits,
-      "created_at" => created_at,
-      "updated_at" => updated_at,
-      "user_id"    => user_id
+      "title"             => title,
+      "teaser"            => teaser,
+      "body"              => body,
+      "user_id"           => user_id,
+      "sticky"            => sticky,
+      "hits"              => hits,
+      "created_at"        => created_at,
+      "updated_at"        => updated_at,
+      "thread_updated_at" => updated_at
     )
 
     $node_id_to_doc_id[node_id] = doc_id.to_s
@@ -131,14 +134,15 @@ def convert_forums_and_comments
     count = count + comments.size
 
     doc_id = article_coll.insert(
-      "title"      => forum[:title],
-      "teaser"     => comments[0][:body],
-      "body"       => "",
-      "sticky"     => forum[:sticky],
-      "hits"       => forum[:hits],
-      "created_at" => comments[0][:created_at],
-      "updated_at" => comments[0][:updated_at],
-      "user_id"    => comments[0][:user_id]
+      "title"             => forum[:title],
+      "teaser"            => comments[0][:body],
+      "body"              => "",
+      "user_id"           => comments[0][:user_id],
+      "sticky"            => forum[:sticky],
+      "hits"              => forum[:hits],
+      "created_at"        => comments[0][:created_at],
+      "updated_at"        => comments[0][:updated_at],
+      "thread_updated_at" => comments[0][:updated_at]  # FIXME
     )
 
     article_id = doc_id.to_s
@@ -199,21 +203,37 @@ def convert_categories_and_tocs
     end
 
     doc_id = category_coll.insert(
-      "name"        => name_position_toc[:name],
-      "position"    => name_position_toc[:position],
-      "toc"         => name_position_toc[:toc],
-      "article_ids" => doc_ids
+      "name"     => name_position_toc[:name],
+      "position" => name_position_toc[:position],
+      "toc"      => name_position_toc[:toc]
     )
+    insert_to_articles_categories(doc_id.to_s, doc_ids)
   end
 
   # Insert category "Uncategorized"
   name_position_toc = categories[0]
   doc_id = category_coll.insert(
-    "name"        => name_position_toc[:name],
-    "position"    => name_position_toc[:position],
-    "toc"         => name_position_toc[:toc],
-    "article_ids" => uncategorized_doc_ids.to_a
+    "name"     => name_position_toc[:name],
+    "position" => name_position_toc[:position],
+    "toc"      => name_position_toc[:toc]
   )
+  insert_to_articles_categories(doc_id.to_s, uncategorized_doc_ids)
+end
+
+def insert_to_articles_categories(category_id, article_ids)
+  articles_categories_coll = $tivua.collection("articles_categories")
+  articles_coll            = $tivua.collection("articles")
+
+  article_ids.each do |article_id|
+    article = articles_coll.find_one({"_id" => BSON::ObjectId.from_string(article_id)})
+    thread_updated_at = article["thread_updated_at"]
+
+    articles_categories_coll.insert(
+      "article_id"        => article_id,
+      "category_id"       => category_id,
+      "thread_updated_at" => thread_updated_at
+    )
+  end
 end
 
 #-------------------------------------------------------------------------------

@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat
 import scala.xml.Unparsed
 import xitrum.Action
 
-import tivua.action.article.Show
+import tivua.action.article.{Show => ArticleShow}
+import tivua.action.category.{Show => CategoryShow}
 import tivua.model.{Article, Comment}
 
 trait ArticleHelper extends AppHelper {
@@ -14,7 +15,7 @@ trait ArticleHelper extends AppHelper {
 
   def renderArticlePreview(article: Article) = {
     val commento = Comment.lastComment(article.id)
-    val url = urlFor[Show]("id" -> article.id, "titleInUrl" -> titleInUrl(article.title))
+    val url = urlFor[ArticleShow]("id" -> article.id, "titleInUrl" -> titleInUrl(article.title))
 
     <div>
       <h1><a href={url}>{article.title}</a></h1>
@@ -30,13 +31,20 @@ trait ArticleHelper extends AppHelper {
   }
 
   def renderArticleMetaData(article: Article) = {
+    val categories = article.categories.filter(!_.isUncategorized).map { c =>
+      <a href={urlFor[CategoryShow]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a>
+    }
+
     <div class="article_metadata">
       <div class="grid_1"><fb:profile-pic uid={article.userId} facebook-logo="true" /></div>
       <div style="margin-left: 1em" class="prefix_1">
-        <b><fb:name uid={article.userId}></fb:name></b>
+        <b><fb:name uid={article.userId}></fb:name></b><br />
+
         Hits: {article.hits} |
         Created: {dateFormat.format(article.createdAt)}
-        {if (article.updatedAt != article.createdAt) "| Updated: " + dateFormat.format(article.updatedAt) }
+        {if (article.updatedAt != article.createdAt) "| Updated: " + dateFormat.format(article.updatedAt) }<br />
+
+        {if (!categories.isEmpty) Unparsed("Category: " + categories.mkString(", "))}
       </div>
       <div class="clear"></div>
     </div>
