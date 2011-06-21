@@ -12,7 +12,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
   beforeFilters("prepareCategories") = () => {
     val categories = Category.all
     Var.rCategories.set(categories)
-    categories.find(_.name == "").foreach(Var.rUncategorizedCategory.set(_))
+    categories.find(_.name == "").foreach(Var.rToBeCategorizedCategory.set(_))
 
     true
   }
@@ -60,8 +60,8 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
             {
               if (Var.rCategory.isDefined)
                 renderCategoryToc(Var.rCategory.get)
-              else if (Var.rUncategorizedCategory.isDefined)
-                renderCategoryToc(Var.rUncategorizedCategory.get)
+              else if (Var.rToBeCategorizedCategory.isDefined)
+                renderCategoryToc(Var.rToBeCategorizedCategory.get)
             }
           </div>
 

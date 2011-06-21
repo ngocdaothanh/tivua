@@ -58,7 +58,7 @@ object Article {
     val count = articleColl.count.toInt
     val numPages = (count / ITEMS_PER_PAGE) + (if (count % ITEMS_PER_PAGE == 0) 0 else 1)
 
-    val cur = articleColl.find().sort(MongoDBObject("updated_at" -> -1)).skip((p - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+    val cur = articleColl.find().sort(MongoDBObject("sticky" -> -1, "thread_updated_at" -> -1)).skip((p - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
     val buffer = new ArrayBuffer[Article]
     for (o <- cur) {
       val a = mongoToScala(o)
@@ -86,7 +86,7 @@ object Article {
     val count = articleCategoryColl.count(MongoDBObject("category_id" -> categoryId)).toInt
     val numPages = (count / ITEMS_PER_PAGE) + (if (count % ITEMS_PER_PAGE == 0) 0 else 1)
 
-    val cur = articleCategoryColl.find(MongoDBObject("category_id" -> categoryId)).sort(MongoDBObject("thread_updated_at" -> -1)).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+    val cur = articleCategoryColl.find(MongoDBObject("category_id" -> categoryId)).sort(MongoDBObject("sticky" -> -1, "thread_updated_at" -> -1)).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
     val buffer = new ArrayBuffer[Article]
     for (o <- cur) {
       val articleId = o.as[String](ArticleCategoryColl.ARTICLE_ID)

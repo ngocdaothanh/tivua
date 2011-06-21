@@ -18,7 +18,7 @@ trait ArticleHelper extends AppHelper {
     val url = urlFor[ArticleShow]("id" -> article.id, "titleInUrl" -> titleInUrl(article.title))
 
     <div>
-      <h1><a href={url}>{article.title}</a></h1>
+      <h1><a href={url}>{article.title}</a> {if (article.sticky) <img src="/public/img/sticky.png" />}</h1>
       {renderArticleMetaData(article)}
       <div>{Unparsed(article.teaser)}</div>
 
@@ -31,7 +31,7 @@ trait ArticleHelper extends AppHelper {
   }
 
   def renderArticleMetaData(article: Article) = {
-    val categories = article.categories.filter(!_.isUncategorized).map { c =>
+    val categories = article.categories.filter(!_.toBeCategorized).map { c =>
       <a href={urlFor[CategoryShow]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a>
     }
 

@@ -41,32 +41,57 @@ def convert_articles_and_comments
   # Articles
   article_coll = $tivua.collection("articles")
 
+  articles = []
   $openkh.select_all("SELECT node_versions.*, nodes.* FROM node_versions INNER JOIN nodes ON nodes.type = 'Article' AND nodes.id = node_versions.node_id AND node_versions.version = nodes.active_version ORDER BY node_versions.id") do |r|
-    node_id           = r[:node_id]
-    title             = r[:title]
-    obj               = YAML::load(r[:_body])
-    teaser            = fix_malformed_html(obj[0])
-    body              = fix_malformed_html(obj[1])
-    user_id           = r[:user_id].to_s
-    sticky            = r[:sticky] != 0
-    hits              = r[:views]
-    created_at        = Time.now    # FIXME
-    updated_at        = r[:created_at].to_time
-    thread_updated_at = updated_at  # FIXME
+    obj = YAML::load(r[:_body])
+    articles << {
+      :node_id           => r[:node_id],
+      :title             => r[:title],
+      :teaser            => fix_malformed_html(obj[0]),
+      :body              => fix_malformed_html(obj[1]),
+      :user_id           => r[:user_id].to_s,
+      :sticky            => r[:sticky] != 0,
+      :hits              => r[:views],
+      :updated_at        => r[:created_at].to_time
+    }
+  end
 
+  # created_at = created_at of the first version
+  articles.each do |article|
+    $openkh.select_all("SELECT * FROM node_versions WHERE node_id = " + article[:node_id].to_s + " ORDER BY version LIMIT 1") do |r|
+      article[:created_at] = r[:created_at].to_time
+    end
+  end
+  
+  # thread_updated_at = max(created_at of the last version, updated_at of comments)
+  articles.each do |article|
+    last_version_created_at = nil
+    $openkh.select_all("SELECT * FROM node_versions WHERE node_id = " + article[:node_id].to_s + " ORDER BY version DESC LIMIT 1") do |r|
+      last_version_created_at = r[:created_at].to_time
+    end
+
+    comments_max_updated_at = nil
+    $openkh.select_all("SELECT * FROM comments WHERE node_id = " + article[:node_id].to_s + " ORDER BY updated_at DESC LIMIT 1") do |r|
+      comments_max_updated_at = r[:updated_at].to_time
+    end
+
+    article[:thread_updated_at] = [last_version_created_at, comments_max_updated_at].find_all { |t| !t.nil? }.max
+  end
+
+  articles.each do |article|
     doc_id = article_coll.insert(
-      "title"             => title,
-      "teaser"            => teaser,
-      "body"              => body,
-      "user_id"           => user_id,
-      "sticky"            => sticky,
-      "hits"              => hits,
-      "created_at"        => created_at,
-      "updated_at"        => updated_at,
-      "thread_updated_at" => updated_at
+      "title"             => article[:title],
+      "teaser"            => article[:teaser],
+      "body"              => article[:body],
+      "user_id"           => article[:user_id],
+      "sticky"            => article[:sticky],
+      "hits"              => article[:hits],
+      "created_at"        => article[:created_at],
+      "updated_at"        => article[:updated_at],
+      "thread_updated_at" => article[:updated_at]
     )
 
-    $node_id_to_doc_id[node_id] = doc_id.to_s
+    $node_id_to_doc_id[article[:node_id]] = doc_id.to_s
   end
 
   # Comments
@@ -142,7 +167,7 @@ def convert_forums_and_comments
       "hits"              => forum[:hits],
       "created_at"        => comments[0][:created_at],
       "updated_at"        => comments[0][:updated_at],
-      "thread_updated_at" => comments[0][:updated_at]  # FIXME
+      "thread_updated_at" => comments.map { |c| c[:updated_at] }.max
     )
 
     article_id = doc_id.to_s
@@ -174,8 +199,8 @@ def convert_categories_and_tocs
     }
   end
 
-  # Uncategorized
-  uncategorized_doc_ids = Set.new($node_id_to_doc_id.values)
+  # to_be_categorized
+  to_be_categorized_doc_ids = Set.new($node_id_to_doc_id.values)
   categories[0] = {
     :name     => "",
     :position => 99
@@ -190,7 +215,7 @@ def convert_categories_and_tocs
 
   # article_ids
   categories.each do |category_id, name_position_toc|
-    next if category_id == 0  # Uncategorized
+    next if category_id == 0  # to_be_categorized
 
     doc_ids = []
     $openkh.select_all("SELECT * FROM categories_nodes WHERE category_id = " + category_id.to_s) do |r|
@@ -198,7 +223,7 @@ def convert_categories_and_tocs
       doc_id  = $node_id_to_doc_id[node_id]
       unless doc_id.nil?
         doc_ids << doc_id
-        uncategorized_doc_ids.delete(doc_id)
+        to_be_categorized_doc_ids.delete(doc_id)
       end
     end
 
@@ -210,14 +235,14 @@ def convert_categories_and_tocs
     insert_to_articles_categories(doc_id.to_s, doc_ids)
   end
 
-  # Insert category "Uncategorized"
+  # Insert category to_be_categorized
   name_position_toc = categories[0]
   doc_id = category_coll.insert(
     "name"     => name_position_toc[:name],
     "position" => name_position_toc[:position],
     "toc"      => name_position_toc[:toc]
   )
-  insert_to_articles_categories(doc_id.to_s, uncategorized_doc_ids)
+  insert_to_articles_categories(doc_id.to_s, to_be_categorized_doc_ids)
 end
 
 def insert_to_articles_categories(category_id, article_ids)
