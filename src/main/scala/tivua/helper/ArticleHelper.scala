@@ -17,9 +17,9 @@ trait ArticleHelper extends AppHelper {
     val commento = Comment.lastComment(article.id)
     val url = urlFor[ArticleShow]("id" -> article.id, "titleInUrl" -> titleInUrl(article.title))
 
-    <div>
+    <xml:group>
       <h1><a href={url}>{article.title}</a> {if (article.sticky) <img src={urlForPublic("img/sticky.png")} />}</h1>
-      {renderArticleMetaData(article)}
+      {renderArticleMetaData(article, false)}
       <div>{Unparsed(article.teaser)}</div>
 
       <p><a href={url}>→ Read more</a></p>
@@ -27,10 +27,10 @@ trait ArticleHelper extends AppHelper {
       {if (commento.isDefined) {
         <div>{renderComment(commento.get)}</div>
       }}
-    </div>
+    </xml:group>
   }
 
-  def renderArticleMetaData(article: Article) = {
+  def renderArticleMetaData(article: Article, showLike: Boolean = true) = {
     val categories = article.categories.filter(!_.toBeCategorized).map { c =>
       <a href={urlFor[CategoryShow]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a>
     }
@@ -44,7 +44,13 @@ trait ArticleHelper extends AppHelper {
         Created: {dateFormat.format(article.createdAt)}
         {if (article.updatedAt != article.createdAt) "| Updated: " + dateFormat.format(article.updatedAt) }<br />
 
-        {if (!categories.isEmpty) Unparsed("Category: " + categories.mkString(", "))}
+        {if (!categories.isEmpty)
+          <xml:group>
+            Category: {Unparsed(categories.mkString(", "))}<br />
+          </xml:group>
+        }
+
+        {if (showLike) <fb:like send="true" show_faces="true"></fb:like>}
       </div>
       <div class="clear"></div>
     </div>

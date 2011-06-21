@@ -12,19 +12,19 @@ trait CategoryHelper extends AppHelper {
   def renderCategories = {
     val categories = Category.all
 
-    <div>
+    <xml:group>
       <h3>Categories</h3>
       <ul>
         {categories.map { c =>
-          <li><a href={urlFor[Show]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a></li> }
-        }
+          <li><a href={urlFor[Show]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a></li>
+        }}
       </ul>
-    </div>
+    </xml:group>
   }
 
   def renderCategoryToc(category: Category) =
-    <div>
+    <xml:group>
       <h3>Contents</h3>
       {Unparsed(category.toc)}
-    </div>
+    </xml:group>
 }

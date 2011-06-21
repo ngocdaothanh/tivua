@@ -29,7 +29,7 @@ class Show extends AppAction with ArticleHelper {
         val (numPages, articles) = Article.categoryPage(category.id, page)
         val links = renderPaginationLinks(numPages, page, "/categories/" + id + "/" + nameInUrl + "/%s")
         renderView(
-          <div>
+          <xml:group>
             <b>{title}</b>
             <hr />
 
@@ -38,7 +38,7 @@ class Show extends AppAction with ArticleHelper {
               {articles.map { a => <li>{renderArticlePreview(a)}</li> }}
             </ul>
             {links}
-          </div>
+          </xml:group>
         )
     }
   }

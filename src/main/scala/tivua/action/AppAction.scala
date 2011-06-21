@@ -33,6 +33,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
         <link type="text/css" rel="stylesheet" media="all" href={urlForPublic("css/application.css")} />
 
         <script type="text/javascript" src="http://tinymce.moxiecode.com/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
+        <script src="http://connect.facebook.net/en_US/all.js#appId=APP_ID&amp;xfbml=1"></script>
         <script type="text/javascript" src={urlForPublic("js/application.js")}></script>
       </head>
       <body>
@@ -48,14 +49,11 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
           </div>
 
           <div id="sidebar" class="grid_3">
-            {renderCategories}
-
             <a href={urlFor[New]}>Create new article</a>
-
-            <fb:profile-pic uid="12345" facebook-logo="true" />
-            <fb:name uid="12345"></fb:name>
-
             <fb:login-button show-faces="true"></fb:login-button>
+            <br/>
+
+            {renderCategories}
 
             {
               if (Var.rCategory.isDefined)
@@ -84,12 +82,6 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
                 window.location.reload();
               });
             };
-
-            (function() {
-              var e = document.createElement('script'); e.async = true;
-              e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-              document.getElementById('fb-root').appendChild(e);
-            }());
           </xml:unparsed>
         </script>
 

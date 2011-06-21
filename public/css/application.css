@@ -38,7 +38,6 @@ ul.articles > li, ul.comments > li {
 .article_metadata, .comment_metadata {
   color: gray;
   margin-bottom: 1em;
-  line-height: 0.8em;
 }
 
 input[type="text"], textarea {

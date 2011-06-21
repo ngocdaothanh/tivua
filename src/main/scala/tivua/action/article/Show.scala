@@ -24,7 +24,7 @@ class Show extends AppAction with ArticleHelper {
 
         Var.rTitle.set(article.title)
         renderView(
-          <div>
+          <xml:group>
             <div class="article">
               <h1>{article.title} {if (article.sticky) <img src={urlForPublic("img/sticky.png")} />}</h1>
               {renderArticleMetaData(article)}
@@ -39,7 +39,7 @@ class Show extends AppAction with ArticleHelper {
                 {comments.map {c => <li>{renderComment(c)}</li> }}
               </ul>
             }
-          </div>)
+          </xml:group>)
     }
   }
 }

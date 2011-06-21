@@ -13,14 +13,14 @@ class Index extends AppAction with ArticleHelper {
     val (numPages, articles) = Article.page(page)
 
     Var.rTitle.set("Home")
-    val links   = renderPaginationLinks(numPages, page, "/articles/page/%s")
+    val links = renderPaginationLinks(numPages, page, "/articles/page/%s")
     renderView(
-      <div>
+      <xml:group>
         {links}
         <ul class="articles">
           {articles.map { a => <li>{renderArticlePreview(a)}</li> }}
         </ul>
        {links}
-      </div>)
+      </xml:group>)
   }
 }
