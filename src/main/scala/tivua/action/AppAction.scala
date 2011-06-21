@@ -5,6 +5,7 @@ import xitrum.view.DocType
 
 import tivua.Config
 import tivua.action.article.{Index, New}
+import tivua.action.auth.CheckFacebookLogin
 import tivua.helper.{AppHelper, CategoryHelper}
 import tivua.model.Category
 
@@ -33,7 +34,6 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
         <link type="text/css" rel="stylesheet" media="all" href={urlForPublic("css/application.css")} />
 
         <script type="text/javascript" src="http://tinymce.moxiecode.com/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
-        <script src="http://connect.facebook.net/en_US/all.js#appId=APP_ID&amp;xfbml=1"></script>
         <script type="text/javascript" src={urlForPublic("js/application.js")}></script>
       </head>
       <body>
@@ -49,17 +49,20 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
           </div>
 
           <div id="sidebar" class="grid_3">
-            <a href={urlFor[New]}>Create new article</a>
-            <fb:login-button show-faces="true"></fb:login-button>
-            <br/>
+            {if(!Var.sFacebookUid.isDefined)
+              <a href={"https://www.facebook.com/dialog/oauth?client_id=" + Config.facebookAppId + "&redirect_uri=" + absoluteUrlPrefix + urlFor[CheckFacebookLogin]}>Login with Facebook</a>
+            }
+
+            <fb:login-button show-faces="true" width="250"></fb:login-button><br/><br/>
+
+            <p><a href={urlFor[New]}>Create new article</a></p>
 
             {renderCategories}
 
-            {
-              if (Var.rCategory.isDefined)
-                renderCategoryToc(Var.rCategory.get)
-              else if (Var.rToBeCategorizedCategory.isDefined)
-                renderCategoryToc(Var.rToBeCategorizedCategory.get)
+            {if (Var.rCategory.isDefined)
+              renderCategoryToc(Var.rCategory.get)
+            else if (Var.rToBeCategorizedCategory.isDefined)
+              renderCategoryToc(Var.rToBeCategorizedCategory.get)
             }
           </div>
 
@@ -72,9 +75,11 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
         </div>
 
         <script>
+          var facebookAppId = '{Config.facebookAppId}';
+
           <xml:unparsed>
             window.fbAsyncInit = function() {
-              FB.init({appId: '102713449075', status: true, cookie: true, xfbml: true});
+              FB.init({appId: facebookAppId, status: true, cookie: true, xfbml: true});
               FB.Event.subscribe('auth.login', function(response) {
                 window.location.reload();
               });
@@ -82,6 +87,15 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
                 window.location.reload();
               });
             };
+
+            (function() {
+              var e = document.createElement('script');
+              e.type = 'text/javascript';
+              e.src = document.location.protocol +
+                '//connect.facebook.net/vi_VN/all.js';
+              e.async = true;
+              document.getElementById('fb-root').appendChild(e);
+            }());
           </xml:unparsed>
         </script>
 

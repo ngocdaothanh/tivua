@@ -50,7 +50,7 @@ trait ArticleHelper extends AppHelper {
           </xml:group>
         }
 
-        {if (showLike) <fb:like send="true" show_faces="true"></fb:like>}
+        {if (showLike) <fb:like send="true" layout="button_count"></fb:like>}
       </div>
       <div class="clear"></div>
     </div>
