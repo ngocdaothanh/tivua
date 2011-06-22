@@ -1,3 +1,4 @@
+config/tivua.properties
 lib_managed
 log
 project/boot

@@ -7,8 +7,6 @@ import tivua.action.category.Show
 import tivua.model.Category
 
 trait CategoryHelper extends AppHelper {
-  this: Action =>
-
   def renderCategories = {
     val categories = Category.all
 

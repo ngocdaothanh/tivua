@@ -5,11 +5,11 @@ import xitrum.view.DocType
 
 import tivua.Config
 import tivua.action.article.{Index, New}
-import tivua.action.auth.CheckFacebookLogin
-import tivua.helper.{AppHelper, CategoryHelper}
+import tivua.action.auth.{CheckFacebookLogin, Logout}
+import tivua.helper.{AppHelper, CategoryHelper, FacebookHelper}
 import tivua.model.Category
 
-trait AppAction extends Action with AppHelper with CategoryHelper {
+trait AppAction extends Action with AppHelper with CategoryHelper with FacebookHelper {
   beforeFilters("prepareCategories") = () => {
     val categories = Category.all
     Var.rCategories.set(categories)
@@ -49,13 +49,20 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
           </div>
 
           <div id="sidebar" class="grid_3">
-            {if(!Var.sFacebookUid.isDefined)
-              <a href={"https://www.facebook.com/dialog/oauth?client_id=" + Config.facebookAppId + "&redirect_uri=" + absoluteUrlPrefix + urlFor[CheckFacebookLogin]}>Login with Facebook</a>
+            {if(Var.sFacebookUid.isDefined)
+              <xml:group>
+                <div class="grid_1"><fb:profile-pic uid={Var.sFacebookUid.get} /></div>
+                <div class="prefix_1" style="margin-left: 3em">
+                  <b><fb:name uid={Var.sFacebookUid.get} useyou="false"></fb:name></b><br />
+                  <a href="#" postback="click" action={urlForPostback[Logout]}>Logout</a><br />
+                  <a href={urlFor[New]}>Create new article</a>
+                </div>
+                <div class="clear"></div>
+                <br />
+              </xml:group>
+            else
+              <p><a href={facebookLoginUrl}>Login with Facebook</a></p>
             }
-
-            <fb:login-button show-faces="true" width="250"></fb:login-button><br/><br/>
-
-            <p><a href={urlFor[New]}>Create new article</a></p>
 
             {renderCategories}
 
@@ -80,12 +87,6 @@ trait AppAction extends Action with AppHelper with CategoryHelper {
           <xml:unparsed>
             window.fbAsyncInit = function() {
               FB.init({appId: facebookAppId, status: true, cookie: true, xfbml: true});
-              FB.Event.subscribe('auth.login', function(response) {
-                window.location.reload();
-              });
-              FB.Event.subscribe('auth.logout', function(response) {
-                window.location.reload();
-              });
             };
 
             (function() {

@@ -9,8 +9,6 @@ import tivua.action.category.{Show => CategoryShow}
 import tivua.model.{Article, Comment}
 
 trait ArticleHelper extends AppHelper {
-  this: Action =>
-
   private val dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm")
 
   def renderArticlePreview(article: Article) = {
@@ -38,7 +36,7 @@ trait ArticleHelper extends AppHelper {
     <div class="article_metadata">
       <div class="grid_1"><fb:profile-pic uid={article.userId} facebook-logo="true" /></div>
       <div style="margin-left: 1em" class="prefix_1">
-        <b><fb:name uid={article.userId}></fb:name></b><br />
+        <b><fb:name uid={article.userId} useyou="false"></fb:name></b><br />
 
         Hits: {article.hits} |
         Created: {dateFormat.format(article.createdAt)}
@@ -59,9 +57,9 @@ trait ArticleHelper extends AppHelper {
   def renderComment(comment: Comment) = {
     <div class="comment">
       <div class="grid_1"><fb:profile-pic uid={comment.userId} facebook-logo="true" /></div>
-      <div style="margin-left: 1em" class="prefix_1">
+      <div class="prefix_1" style="margin-left: 1em">
         <div class="comment_metadata">
-          <b><fb:name uid={comment.userId}></fb:name></b>
+          <b><fb:name uid={comment.userId} useyou="false"></fb:name></b>
           Created: {dateFormat.format(comment.createdAt)}
           {if (comment.updatedAt != comment.createdAt) "| Updated: " + dateFormat.format(comment.updatedAt) }
         </div>
