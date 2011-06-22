@@ -38,39 +38,48 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
       </head>
       <body>
         <div class="container_12">
-          <div id="header" class="grid_12">
-            <h1><a href={urlFor[Index]}>{Config.siteName}</a></h1>
+          <div class="grid_12">
+            <div id="header">
+              <h1><a href={urlFor[Index]}>{Config.siteName}</a></h1>
+            </div>
           </div>
 
-          <div id="content" class="grid_8">
-            <div id="flash">{jsFlash}</div>
+          <div class="grid_8">
+            <div id="mainbar">
+              <div id="flash">{jsFlash}</div>
 
-            {renderedView}
+              {renderedView}
+            </div>
           </div>
 
-          <div id="sidebar" class="grid_3">
-            {if(Var.sFacebookUid.isDefined)
-              <xml:group>
-                <div class="grid_1"><fb:profile-pic uid={Var.sFacebookUid.get} /></div>
-                <div class="prefix_1" style="margin-left: 3em">
-                  <b><fb:name uid={Var.sFacebookUid.get} useyou="false"></fb:name></b><br />
-                  <a href="#" postback="click" action={urlForPostback[Logout]}>Logout</a><br />
-                  <a href={urlFor[New]}>Create new article</a>
-                </div>
-                <div class="clear"></div>
-                <br />
-              </xml:group>
-            else
-              <p><a href={facebookLoginUrl}>Login with Facebook</a></p>
-            }
+          <div class="grid_4">
+            <div id="sidebar">
+              {if(Var.sFacebookUid.isDefined)
+                <table>
+                  <tr>
+                    <td><fb:profile-pic uid={Var.sFacebookUid.get} facebook-logo="true" /><br /></td>
+                    <td style="vertical-align: top; padding-left: 1em">
+                      <b><fb:name uid={Var.sFacebookUid.get} useyou="false"></fb:name></b><br />
+                      <a href="#" postback="click" action={urlForPostback[Logout]}>Logout</a><br />
+                      <a href={urlFor[New]}>Create new article</a>
+                    </td>
+                  </tr>
+                </table>
+              else
+                <p>
+                  <img src="http://facebook.com/favicon.ico" />
+                  <a href={facebookLoginUrl}>Login with Facebook</a>
+                </p>
+              }
 
-            {renderCategories}
+              {renderCategories}
 
-            {if (Var.rCategory.isDefined)
-              renderCategoryToc(Var.rCategory.get)
-            else if (Var.rToBeCategorizedCategory.isDefined)
-              renderCategoryToc(Var.rToBeCategorizedCategory.get)
-            }
+              {if (Var.rCategory.isDefined)
+                renderCategoryToc(Var.rCategory.get)
+              else if (Var.rToBeCategorizedCategory.isDefined)
+                renderCategoryToc(Var.rToBeCategorizedCategory.get)
+              }
+            </div>
           </div>
 
           <div class="clear"></div>

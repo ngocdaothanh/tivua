@@ -33,39 +33,43 @@ trait ArticleHelper extends AppHelper {
       <a href={urlFor[CategoryShow]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a>
     }
 
-    <div class="article_metadata">
-      <div class="grid_1"><fb:profile-pic uid={article.userId} facebook-logo="true" /></div>
-      <div style="margin-left: 1em" class="prefix_1">
-        <b><fb:name uid={article.userId} useyou="false"></fb:name></b><br />
+    <table class="article_metadata">
+      <tr>
+        <td><fb:profile-pic uid={article.userId} facebook-logo="true" /></td>
+        <td style="vertical-align: top; padding-left: 1em">
+          <b><fb:name uid={article.userId} useyou="false"></fb:name></b><br />
 
-        Hits: {article.hits} |
-        Created: {dateFormat.format(article.createdAt)}
-        {if (article.updatedAt != article.createdAt) "| Updated: " + dateFormat.format(article.updatedAt) }<br />
+          Hits: {article.hits} |
+          Created: {dateFormat.format(article.createdAt)}
+          {if (article.updatedAt != article.createdAt) "| Updated: " + dateFormat.format(article.updatedAt) }<br />
 
-        {if (!categories.isEmpty)
-          <xml:group>
-            Category: {Unparsed(categories.mkString(", "))}<br />
-          </xml:group>
-        }
+          {if (!categories.isEmpty)
+            <xml:group>
+              Category: {Unparsed(categories.mkString(", "))}<br />
+            </xml:group>
+          }
 
-        {if (showLike) <fb:like send="true" layout="button_count"></fb:like>}
-      </div>
-      <div class="clear"></div>
-    </div>
+          {if (showLike) <fb:like send="true" layout="button_count"></fb:like>}
+        </td>
+      </tr>
+    </table>
   }
 
   def renderComment(comment: Comment) = {
-    <div class="comment">
-      <div class="grid_1"><fb:profile-pic uid={comment.userId} facebook-logo="true" /></div>
-      <div class="prefix_1" style="margin-left: 1em">
-        <div class="comment_metadata">
-          <b><fb:name uid={comment.userId} useyou="false"></fb:name></b>
-          Created: {dateFormat.format(comment.createdAt)}
-          {if (comment.updatedAt != comment.createdAt) "| Updated: " + dateFormat.format(comment.updatedAt) }
-        </div>
-        {Unparsed(comment.body)}
-      </div>
-      <div class="clear"></div>
-    </div>
+    <table class="comment">
+      <tr>
+        <td><fb:profile-pic uid={comment.userId} facebook-logo="true" /></td>
+        <td style="vertical-align: top; padding-left: 1em; width: 100%">
+          <div class="comment_metadata">
+            <b><fb:name uid={comment.userId} useyou="false"></fb:name></b>
+            Created: {dateFormat.format(comment.createdAt)}
+            {if (comment.updatedAt != comment.createdAt) "| Updated: " + dateFormat.format(comment.updatedAt) }
+          </div>
+          <div>
+          {Unparsed(comment.body)}
+          </div>
+        </td>
+      </tr>
+    </table>
   }
 }
