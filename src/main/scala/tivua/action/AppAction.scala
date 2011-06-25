@@ -18,7 +18,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
     true
   }
 
-  override def layout = Some(() => DocType.xhtmlTransitional(
+  override def layout = DocType.xhtmlTransitional(
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         {xitrumHead}
@@ -112,5 +112,5 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
         {jsForView}
       </body>
     </html>
-  ))
+  )
 }

@@ -2,11 +2,6 @@
   font-size: 35px;
 }
 
-a {
-  color: #3B5998;
-  text-decoration: none;
-}
-
 #sidebar {
   background-color: #F2F2F2;
   padding: 1em;
@@ -16,6 +11,15 @@ a {
   font-weight: bold;
   text-align: center;
   margin-bottom: 1em;
+}
+
+a {
+  color: #3B5998;
+  text-decoration: none;
+}
+
+label {
+  font-weight: bold;
 }
 
 .notice {
