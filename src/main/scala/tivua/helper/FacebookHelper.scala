@@ -9,14 +9,13 @@ import scala.util.parsing.json.JSON
 import org.jboss.netty.handler.codec.http.QueryStringDecoder
 
 import tivua.Config
-import tivua.action.article.Index
-import tivua.action.auth.CheckFacebookLogin
+import tivua.action.AuthCheckFacebookLogin
 
 /** http://developers.facebook.com/docs/authentication/ */
 trait FacebookHelper extends AppHelper {
   // redirect_uri for login and verify must be the same
   // http://stackoverflow.com/questions/4386691/facebook-error-error-validating-verification-code
-  lazy val encodedRedirectUri = URLEncoder.encode(absoluteUrlFor[CheckFacebookLogin])
+  lazy val encodedRedirectUri = URLEncoder.encode(absoluteUrlFor[AuthCheckFacebookLogin])
 
   lazy val facebookLoginUrl =
     "https://www.facebook.com/dialog/oauth?" + 

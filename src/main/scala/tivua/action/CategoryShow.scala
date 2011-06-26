@@ -1,14 +1,13 @@
-package tivua.action.category
+package tivua.action
 
 import org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import xitrum.annotation.GETs
 
-import tivua.action.{AppAction, Var}
 import tivua.helper.ArticleHelper
 import tivua.model.Article
 
 @GETs(Array("/categories/:id/:nameInUrl", "/categories/:id/:nameInUrl/:page"))
-class Show extends AppAction with ArticleHelper {
+class CategoryShow extends AppAction with ArticleHelper {
   override def execute {
     val id        = param("id")
     val nameInUrl = param("nameInUrl")

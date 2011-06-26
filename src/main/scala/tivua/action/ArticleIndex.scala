@@ -1,13 +1,12 @@
-package tivua.action.article
+package tivua.action
 
 import xitrum.annotation.GETs
 
-import tivua.action.{AppAction, Var}
 import tivua.helper.ArticleHelper
 import tivua.model.Article
 
 @GETs(Array("/", "/articles/page/:page"))
-class Index extends AppAction with ArticleHelper {
+class ArticleIndex extends AppAction with ArticleHelper {
   override def execute {
     val page = paramo("page").getOrElse("1").toInt
     val (numPages, articles) = Article.page(page)

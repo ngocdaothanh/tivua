@@ -2,10 +2,8 @@ package tivua.helper
 
 import java.text.SimpleDateFormat
 import scala.xml.Unparsed
-import xitrum.Action
 
-import tivua.action.article.{Show => ArticleShow}
-import tivua.action.category.{Show => CategoryShow}
+import tivua.action.{ArticleShow, CategoryShow}
 import tivua.model.{Article, Comment}
 
 trait ArticleHelper extends AppHelper {

@@ -1,14 +1,12 @@
-package tivua.action.auth
+package tivua.action
 
 import xitrum.Action
 import xitrum.annotation.GET
 
-import tivua.action.Var
-import tivua.action.article.Index
 import tivua.helper.FacebookHelper
 
 @GET("/auth/check_facebook_login")
-class CheckFacebookLogin extends Action with FacebookHelper {
+class AuthCheckFacebookLogin extends Action with FacebookHelper {
   override def execute {
     val codeo = paramo("code")
     codeo match {
@@ -26,6 +24,6 @@ class CheckFacebookLogin extends Action with FacebookHelper {
             Var.sFacebookUid.set(uid)
         }
     }
-    redirectTo[Index]
+    redirectTo[ArticleIndex]
   }
 }

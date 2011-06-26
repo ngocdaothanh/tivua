@@ -4,8 +4,6 @@ import xitrum.Action
 import xitrum.view.DocType
 
 import tivua.Config
-import tivua.action.article.{Index, New}
-import tivua.action.auth.{CheckFacebookLogin, Logout}
 import tivua.helper.{AppHelper, CategoryHelper, FacebookHelper}
 import tivua.model.Category
 
@@ -40,7 +38,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
         <div class="container_12">
           <div class="grid_12">
             <div id="header">
-              <h1><a href={urlFor[Index]}>{Config.siteName}</a></h1>
+              <h1><a href={urlFor[ArticleIndex]}>{Config.siteName}</a></h1>
             </div>
           </div>
 
@@ -60,8 +58,8 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
                     <td><fb:profile-pic uid={Var.sFacebookUid.get} facebook-logo="true" /><br /></td>
                     <td style="vertical-align: top; padding-left: 1em">
                       <b><fb:name uid={Var.sFacebookUid.get} useyou="false"></fb:name></b><br />
-                      <a href="#" postback="click" action={urlForPostback[Logout]}>Logout</a><br />
-                      <a href={urlFor[New]}>Create new article</a>
+                      <a href="#" postback="click" action={urlForPostback[AuthLogout]}>Logout</a><br />
+                      <a href={urlFor[ArticleNew]}>Create new article</a>
                     </td>
                   </tr>
                 </table>

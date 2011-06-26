@@ -1,15 +1,14 @@
-package tivua.action.article
+package tivua.action
 
 import scala.xml.Unparsed
 import org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import xitrum.annotation.GET
 
-import tivua.action.{AppAction, Var}
 import tivua.helper.ArticleHelper
 import tivua.model.{Article, Comment}
 
 @GET("/articles/:id/:titleInUrl")
-class Show extends AppAction with ArticleHelper {
+class ArticleShow extends AppAction with ArticleHelper {
   override def execute {
     val id = param("id")
     Article.first(id) match {
