@@ -54,7 +54,7 @@ object Comment {
       val c = mongoToScala(o)
       buffer.append(c)
     }
-    if (buffer.isEmpty) None else Some(buffer.first)
+    if (buffer.isEmpty) None else Some(buffer.head)
   }
 
   //----------------------------------------------------------------------------

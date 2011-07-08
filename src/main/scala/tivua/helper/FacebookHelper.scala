@@ -15,11 +15,11 @@ import tivua.action.AuthCheckFacebookLogin
 trait FacebookHelper extends AppHelper {
   // redirect_uri for login and verify must be the same
   // http://stackoverflow.com/questions/4386691/facebook-error-error-validating-verification-code
-  lazy val encodedRedirectUri = URLEncoder.encode(absoluteUrlFor[AuthCheckFacebookLogin])
+  lazy val encodedRedirectUri = URLEncoder.encode(absoluteUrlFor[AuthCheckFacebookLogin], "UTF-8")
 
   lazy val facebookLoginUrl =
-    "https://www.facebook.com/dialog/oauth?" + 
-    "client_id="     + URLEncoder.encode(Config.facebookAppId) +
+    "https://www.facebook.com/dialog/oauth?" +
+    "client_id="     + URLEncoder.encode(Config.facebookAppId, "UTF-8") +
     "&redirect_uri=" + encodedRedirectUri
 
   /** @return Facebook uid */
@@ -27,16 +27,16 @@ trait FacebookHelper extends AppHelper {
     try {
       val url =
         "https://graph.facebook.com/oauth/access_token?" +
-        "client_id="      + URLEncoder.encode(Config.facebookAppId) +
+        "client_id="      + URLEncoder.encode(Config.facebookAppId, "UTF-8") +
         "&redirect_uri="  + encodedRedirectUri +
-        "&client_secret=" + URLEncoder.encode(Config.facebookAppSecret) +
+        "&client_secret=" + URLEncoder.encode(Config.facebookAppSecret, "UTF-8") +
         "&code="          + code
       val params = Source.fromURL(url, "UTF-8").mkString
 
       val d     = new QueryStringDecoder("?" + params)
       val token = d.getParameters.get("access_token").get(0)
 
-      val url2 = "https://graph.facebook.com/me?access_token=" + URLEncoder.encode(token)
+      val url2 = "https://graph.facebook.com/me?access_token=" + URLEncoder.encode(token, "UTF-8")
       val json = Source.fromURL(url2, "UTF-8").mkString
 
       val map = JSON.parseFull(json).get.asInstanceOf[Map[String, Any]]
