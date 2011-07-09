@@ -38,7 +38,7 @@ object Comment {
   def all(articleId: String): Iterable[Comment] = {
     val cond = MongoDBObject("article_id" -> articleId)
     val cur = coll.find(cond).sort(MongoDBObject("created_at" -> 1))
-    val buffer = new ArrayBuffer[Comment]
+    val buffer = ArrayBuffer[Comment]()
     for (o <- cur) {
       val c = mongoToScala(o)
       buffer.append(c)
@@ -49,7 +49,7 @@ object Comment {
   def lastComment(articleId: String): Option[Comment] = {
     val cond = MongoDBObject("article_id" -> articleId)
     val cur = coll.find(cond).sort(MongoDBObject("created_at" -> -1)).limit(1)
-    val buffer = new ArrayBuffer[Comment]
+    val buffer = ArrayBuffer[Comment]()
     for (o <- cur) {
       val c = mongoToScala(o)
       buffer.append(c)

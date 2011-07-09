@@ -33,7 +33,7 @@ object Category {
 
   def all: Iterable[Category] = {
     val cur = coll.find().sort(MongoDBObject("position" -> 1))
-    val buffer = new ArrayBuffer[Category]
+    val buffer = ArrayBuffer[Category]()
     for (o <- cur) {
       val c = mongoToScala(o)
       buffer.append(c)
