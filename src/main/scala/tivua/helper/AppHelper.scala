@@ -1,7 +1,12 @@
 package tivua.helper
 
 import scala.collection.immutable.Range.Inclusive
+
 import xitrum.Action
+import xitrum.comet.CometPublishAction
+import xitrum.validation.Required
+
+import tivua.action.Chat
 
 trait AppHelper extends Action {
   /**
@@ -26,11 +31,30 @@ trait AppHelper extends Action {
     <div class="pagination">
       {visualize(range1)}
       {if (range2.min > range1.max + 1) <span> ... {visualize(range2)}</span> else visualize((range1.max + 1) to range2.max)}
-      {if (range3.min > range2.max + 1) <span> ... {visualize(range3)}</span> else visualize(range2.max + 1 to range3.max)}
+      {if (range3.min > range2.max + 1) <span> ... {visualize(range3)}</span> else visualize((range2.max + 1) to range3.max)}
     </div>
   }
 
   def titleInUrl(title: String) = unAccent(title).replace('/', '-').replace(' ', '-')
+
+  def renderChatBox = {
+    jsCometGet("chat", """
+      function(timestamp, message) {
+        var escaped = $('<div/>').text(message.body[0]).html();
+        $('#chat_output').append(escaped + '<br />');
+      }
+    """)
+    <xml:group>
+      <h2>Chat</h2>
+      <div id="chat_output"></div>
+      <form postback="submit" action={urlForPostback[CometPublishAction]} after="function() { $('#chat_input').attr('value', '') }">
+        <input type="hidden" name={validate("channel")} value="chat" />
+        <input type="text" id="chat_input" name={validate("body", Required)} />
+      </form>
+    </xml:group>
+  }
+
+  //----------------------------------------------------------------------------
 
   private def unAccent(s: String) = {
     import java.text.Normalizer

@@ -5,7 +5,7 @@ import xitrum.validation.Required
 
 import tivua.model.Article
 
-@GET(value="/articles/new", first=true)
+@GET("/articles/new")
 class ArticleNew extends AppAction {
   override def execute {
     val article = new Article

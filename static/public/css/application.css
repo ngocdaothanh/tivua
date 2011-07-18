@@ -95,3 +95,10 @@ code {
   padding: 0.5em;
   margin-bottom: 0.5em;
 }
+
+#chat_output {
+  border: 1px solid;
+  height: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

@@ -17,9 +17,19 @@ trait CategoryHelper extends AppHelper {
     </xml:group>
   }
 
-  def renderCategoryToc(category: Category) =
-    <xml:group>
-      <h3>Contents</h3>
-      {Unparsed(category.toc)}
-    </xml:group>
+  def renderCategoryToc = {
+    val categoryo =
+      if (Var.rCategory.isDefined)
+        Some(Var.rCategory.get)
+      else if (Var.rToBeCategorizedCategory.isDefined)
+        Some(Var.rToBeCategorizedCategory.get)
+      else
+        None
+
+    if (!categoryo.isEmpty)
+      <xml:group>
+        <h3>Contents</h3>
+        {Unparsed(categoryo.get.toc)}
+      </xml:group>
+  }
 }

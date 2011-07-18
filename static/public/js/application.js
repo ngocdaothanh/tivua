@@ -17,3 +17,23 @@ $(function() {
     theme_advanced_resizing: true,
   });
 });
+
+function poll(type, url, callback) {
+  $.ajax({
+    type: type,
+    url: url,
+    error: function() {
+      poll(type, url);
+    },
+    success: function(data) {
+      if (callback) {
+        var newUrl = callback(data);
+        if (newUrl) {
+          poll(type, url);
+        } else {
+          poll(type, newUrl);
+        }
+      }
+    }
+  });
+}

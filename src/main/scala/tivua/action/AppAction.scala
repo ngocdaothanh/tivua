@@ -52,31 +52,10 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
 
           <div class="grid_4">
             <div id="sidebar">
-              {if(Var.sFacebookUid.isDefined)
-                <table>
-                  <tr>
-                    <td><fb:profile-pic uid={Var.sFacebookUid.get} facebook-logo="true" /><br /></td>
-                    <td style="vertical-align: top; padding-left: 1em">
-                      <b><fb:name uid={Var.sFacebookUid.get} useyou="false"></fb:name></b><br />
-                      <a href="#" postback="click" action={urlForPostback[AuthLogout]}>Logout</a><br />
-                      <a href={urlFor[ArticleNew]}>Create new article</a>
-                    </td>
-                  </tr>
-                </table>
-              else
-                <p>
-                  <img src="http://facebook.com/favicon.ico" />
-                  <a href={facebookLoginUrl}>Login with Facebook</a>
-                </p>
-              }
-
+              {renderLoginLogout}
+              {renderChatBox}
               {renderCategories}
-
-              {if (Var.rCategory.isDefined)
-                renderCategoryToc(Var.rCategory.get)
-              else if (Var.rToBeCategorizedCategory.isDefined)
-                renderCategoryToc(Var.rToBeCategorizedCategory.get)
-              }
+              {renderCategoryToc}
             </div>
           </div>
 
