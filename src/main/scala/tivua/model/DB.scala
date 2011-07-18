@@ -6,7 +6,7 @@ import tivua.Config
 
 object DB {
   val db = {
-    val conn = MongoConnection(Config.dbHost, Config.dbPort)
-    conn(Config.dbName)
+    val conn = MongoConnection(Config.mongodbHost, Config.mongodbPort)
+    conn(Config.mongodbName)
   }
 }
