@@ -96,7 +96,7 @@ code {
   margin-bottom: 0.5em;
 }
 
-#chat_output {
+#chatOutput {
   border: 1px solid;
   height: 200px;
   overflow-x: hidden;

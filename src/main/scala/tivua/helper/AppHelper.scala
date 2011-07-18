@@ -39,17 +39,21 @@ trait AppHelper extends Action {
 
   def renderChatBox = {
     jsCometGet("chat", """
-      function(timestamp, message) {
-        var escaped = $('<div/>').text(message.body[0]).html();
-        $('#chat_output').append(escaped + '<br />');
+      function(channel, timestamp, body) {
+        var wasScrollAtBottom = xitrum.isScrollAtBottom('#chatOutput');
+
+        var escaped = $('<div/>').text(body.chatInput[0]).html();
+        $('#chatOutput').append('- ' + escaped + '<br />');
+
+        if (wasScrollAtBottom) xitrum.scrollToBottom('#chatOutput');
       }
     """)
     <xml:group>
       <h2>Chat</h2>
-      <div id="chat_output"></div>
-      <form postback="submit" action={urlForPostback[CometPublishAction]} after="function() { $('#chat_input').attr('value', '') }">
+      <div id="chatOutput"></div>
+      <form postback="submit" action={urlForPostback[CometPublishAction]} after="function() { $('#chatInput').attr('value', '') }">
         <input type="hidden" name={validate("channel")} value="chat" />
-        <input type="text" id="chat_input" name={validate("body", Required)} />
+        <input type="text" id="chatInput" name={validate("chatInput", Required)} />
       </form>
     </xml:group>
   }
