@@ -46,7 +46,7 @@ ul.articles > li, ul.comments > li {
 }
 
 input[type="text"], textarea {
-  width: 99%;
+  width: 98%;
 }
 
 textarea {
