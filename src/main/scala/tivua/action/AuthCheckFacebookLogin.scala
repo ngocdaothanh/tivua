@@ -19,7 +19,7 @@ class AuthCheckFacebookLogin extends Action with FacebookHelper {
             flash("Login with Facebook failed. Please try again.")
 
           case Some(uid) =>
-            session.reset
+            resetSession
             flash("You have successfully logged in.")
             Var.sFacebookUid.set(uid)
         }
