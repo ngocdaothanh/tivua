@@ -2,7 +2,7 @@ package tivua.helper
 
 import scala.xml.Unparsed
 
-import tivua.action.{CategoryShow, Var}
+import tivua.action.{CategoryShow, RVar}
 import tivua.model.Category
 
 trait CategoryHelper extends AppHelper {
@@ -10,7 +10,7 @@ trait CategoryHelper extends AppHelper {
     <xml:group>
       <h3>Categories</h3>
       <ul>
-        {Var.rCategories.get.map { c =>
+        {RVar.categories.get.map { c =>
           <li><a href={urlFor[CategoryShow]("id" -> c.id, "nameInUrl" -> titleInUrl(c.name))}>{c.name}</a></li>
         }}
       </ul>
@@ -19,10 +19,10 @@ trait CategoryHelper extends AppHelper {
 
   def renderCategoryToc = {
     val categoryo =
-      if (Var.rCategory.isDefined)
-        Some(Var.rCategory.get)
-      else if (Var.rToBeCategorizedCategory.isDefined)
-        Some(Var.rToBeCategorizedCategory.get)
+      if (RVar.category.isDefined)
+        Some(RVar.category.get)
+      else if (RVar.toBeCategorizedCategory.isDefined)
+        Some(RVar.toBeCategorizedCategory.get)
       else
         None
 

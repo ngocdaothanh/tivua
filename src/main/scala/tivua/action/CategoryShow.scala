@@ -13,17 +13,17 @@ class CategoryShow extends AppAction with ArticleHelper {
     val nameInUrl = param("nameInUrl")
     val page      = paramo("page").getOrElse("1").toInt
 
-    Var.rCategories.get.find(_.id == id) match {
+    RVar.categories.get.find(_.id == id) match {
       case None =>
         response.setStatus(NOT_FOUND)
         val title = "Category not found"
-        Var.rTitle.set(title)
+        RVar.title.set(title)
         renderView(title)
 
       case Some(category) =>
         val title = "Category: %s".format(category.name)
-        Var.rTitle.set(title)
-        Var.rCategory.set(category)
+        RVar.title.set(title)
+        RVar.category.set(category)
 
         val (numPages, articles) = Article.categoryPage(category.id, page)
         val links = renderPaginationLinks(numPages, page, "/categories/" + id + "/" + nameInUrl + "/%s")

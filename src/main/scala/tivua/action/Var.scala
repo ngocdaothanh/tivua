@@ -4,11 +4,13 @@ import xitrum.{RequestVar, SessionVar}
 
 import tivua.model.Category
 
-object Var {
-  object rTitle                   extends RequestVar[String]
-  object rCategories              extends RequestVar[Iterable[Category]]
-  object rToBeCategorizedCategory extends RequestVar[Category]
-  object rCategory                extends RequestVar[Category]
+object RVar {
+  object title                   extends RequestVar[String]
+  object categories              extends RequestVar[Iterable[Category]]
+  object toBeCategorizedCategory extends RequestVar[Category]
+  object category                extends RequestVar[Category]
+}
 
-  object sFacebookUid extends SessionVar[String]
+object SVar {
+  object facebookUid extends SessionVar[String]
 }

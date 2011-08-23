@@ -15,13 +15,13 @@ class ArticleShow extends AppAction with ArticleHelper {
       case None =>
         response.setStatus(NOT_FOUND)
         val title = "Article not found"
-        Var.rTitle.set(title)
+        RVar.title.set(title)
         renderView(title)
 
       case Some(article) =>
         val comments = Comment.all(article.id)
 
-        Var.rTitle.set(article.title)
+        RVar.title.set(article.title)
         renderView(
           <xml:group>
             <div class="article">

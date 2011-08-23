@@ -10,8 +10,8 @@ import tivua.model.Category
 trait AppAction extends Action with AppHelper with CategoryHelper with FacebookHelper {
   beforeFilters("prepareCategories") = () => {
     val categories = Category.all
-    Var.rCategories.set(categories)
-    categories.find(_.toBeCategorized).foreach(Var.rToBeCategorizedCategory.set(_))
+    RVar.categories.set(categories)
+    categories.find(_.toBeCategorized).foreach(RVar.toBeCategorizedCategory.set(_))
 
     true
   }
@@ -22,7 +22,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
         {xitrumHead}
 
         <meta content="text/html; charset=utf-8" http-equiv="content-type" />
-        <title>{if (Var.rTitle.isDefined) Config.siteName + " - " + Var.rTitle.get else Config.siteName}</title>
+        <title>{if (RVar.title.isDefined) Config.siteName + " - " + RVar.title.get else Config.siteName}</title>
 
         <link type="image/vnd.microsoft.icon" rel="shortcut icon" href={urlForPublic("../favicon.ico")} />
 

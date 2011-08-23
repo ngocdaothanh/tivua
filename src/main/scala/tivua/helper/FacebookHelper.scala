@@ -9,7 +9,7 @@ import scala.util.parsing.json.JSON
 import org.jboss.netty.handler.codec.http.QueryStringDecoder
 
 import tivua.Config
-import tivua.action.{ArticleNew, AuthCheckFacebookLogin, AuthLogout, Var}
+import tivua.action.{ArticleNew, AuthCheckFacebookLogin, AuthLogout, SVar}
 
 /** http://developers.facebook.com/docs/authentication/ */
 trait FacebookHelper extends AppHelper {
@@ -48,12 +48,12 @@ trait FacebookHelper extends AppHelper {
   }
 
   def renderLoginLogout =
-    if (Var.sFacebookUid.isDefined)
+    if (SVar.facebookUid.isDefined)
       <table>
         <tr>
-          <td><fb:profile-pic uid={Var.sFacebookUid.get} facebook-logo="true" /><br /></td>
+          <td><fb:profile-pic uid={SVar.facebookUid.get} facebook-logo="true" /><br /></td>
           <td style="vertical-align: top; padding-left: 1em">
-            <b><fb:name uid={Var.sFacebookUid.get} useyou="false"></fb:name></b><br />
+            <b><fb:name uid={SVar.facebookUid.get} useyou="false"></fb:name></b><br />
             <a href="#" postback="click" action={urlForPostback[AuthLogout]}>Logout</a><br />
             <a href={urlFor[ArticleNew]}>Create new article</a>
           </td>

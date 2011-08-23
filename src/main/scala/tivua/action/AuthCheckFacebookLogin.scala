@@ -21,7 +21,7 @@ class AuthCheckFacebookLogin extends Action with FacebookHelper {
           case Some(uid) =>
             resetSession
             flash("You have successfully logged in.")
-            Var.sFacebookUid.set(uid)
+            SVar.facebookUid.set(uid)
         }
     }
     redirectTo[ArticleIndex]

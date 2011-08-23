@@ -10,7 +10,7 @@ class ArticleNew extends AppAction {
   override def execute {
     val article = new Article
 
-    Var.rTitle.set("Create new article")
+    RVar.title.set("Create new article")
     renderView(
       <form postback="submit" action={urlForPostbackThis}>
         <label>Title</label>
@@ -19,7 +19,7 @@ class ArticleNew extends AppAction {
 
         <label>Category</label>
         <ul>
-          {Var.rCategories.get.filter(!_.toBeCategorized).map { c =>
+          {RVar.categories.get.filter(!_.toBeCategorized).map { c =>
             <li>
               <input type="checkbox" name="categories" value={c.id} />
               {c.name}

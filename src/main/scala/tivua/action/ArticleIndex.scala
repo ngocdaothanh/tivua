@@ -11,7 +11,7 @@ class ArticleIndex extends AppAction with ArticleHelper {
     val page = paramo("page").getOrElse("1").toInt
     val (numPages, articles) = Article.page(page)
 
-    Var.rTitle.set("Home")
+    RVar.title.set("Home")
     val links = renderPaginationLinks(numPages, page, "/articles/page/%s")
     renderView(
       <xml:group>
