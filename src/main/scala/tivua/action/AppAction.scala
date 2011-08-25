@@ -19,7 +19,8 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
   override def layout = DocType.xhtmlTransitional(
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
-        {xitrumHead}
+        {antiCSRFMeta}
+        {xitrumCSS}
 
         <meta content="text/html; charset=utf-8" http-equiv="content-type" />
         <title>{if (RVar.title.isDefined) Config.siteName + " - " + RVar.title.get else Config.siteName}</title>
@@ -86,7 +87,7 @@ trait AppAction extends Action with AppHelper with CategoryHelper with FacebookH
           </xml:unparsed>
         </script>
 
-        {jsForView}
+        {jsAtBottom}
       </body>
     </html>
   )
