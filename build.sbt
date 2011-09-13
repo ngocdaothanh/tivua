@@ -4,7 +4,7 @@ name         := "tivua"
 
 version      := "1.0-SNAPSHOT"
 
-scalaVersion := "2.9.0-1"
+scalaVersion := "2.9.1"
 
 scalacOptions ++= Seq(
   "-deprecation",
@@ -25,7 +25,7 @@ libraryDependencies += "tv.cntt"            %% "xitrum"          % "1.1-SNAPSHOT
 // An implementation of SLF4J must be provided for Xitrum
 libraryDependencies += "ch.qos.logback"     %  "logback-classic" % "0.9.29"
 
-libraryDependencies += "com.mongodb.casbah" %% "casbah"          % "2.1.5-1"
+libraryDependencies += "com.mongodb.casbah" %  "casbah_2.9.0-1"  % "2.1.5-1"
 
 // For "sbt console"
 unmanagedClasspath in Compile <+= (baseDirectory) map { bd => Attributed.blank(bd / "config") }

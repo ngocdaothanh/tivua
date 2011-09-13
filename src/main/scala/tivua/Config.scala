@@ -1,9 +1,9 @@
 package tivua
 
-import xitrum.{Config => XConfig}
+import xitrum.util.Loader
 
 object Config {
-  private val properties = XConfig.propertiesFromClasspath("tivua.properties")
+  private val properties = Loader.propertiesFromClasspath("tivua.properties")
 
   val siteName = properties.getProperty("site_name")
 

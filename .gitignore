@@ -4,4 +4,6 @@ log
 project/boot
 target
 tmp
+
+routes.sclasner
 .*
